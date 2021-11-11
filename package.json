@@ -1,0 +1,23 @@
+{
+  "name": "crowd-contract",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://git.numbers21.com/crowd/crowd-contract.git",
+  "author": "phillip <philosup@numbers21.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@openzeppelin/contracts": "4.2.0",
+    "truffle": "5.4.6"
+  },
+  "scripts": {
+    "build": "truffle compile",
+    "deploy": "truffle deploy --network bscTestnet",
+    "migrate": "truffle migrate --network development",
+    "test": "truffle test"
+  },
+  "dependencies": {
+    "builder": "^5.0.0",
+    "dotenv": "^10.0.0",
+    "truffle-hdwallet-provider": "^1.0.17"
+  }
+}
