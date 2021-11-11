@@ -16,15 +16,33 @@
 ## truffle
 
 > truffle create migration CROWDToken
-> truffle create migration CROWDStaking
 
 
 컴파일 사이즈 확인
 > grep \"bytecode\" build/contracts/* | awk '{print $1 " " length($3)/2}'
 ## TOKEN
 
+- CWD Token
+- mintable, burnable
+## BRIDGE
+
+- etheruem to bsc(Binance Smart Chain) for CWD token
+- bsc to ethereum for CWD token
+- user confirm
+- can not cancel
+
+### step
+
+1. CWD transfer to Bridge on Ethereum Network
+1. after 6 confirmations
+1. confirm on BSC Network => receive CWD Token 
+1. 
 ## Ticket
 
 
 ## Staking
 
+## POOL
+
+
+## Wallet
