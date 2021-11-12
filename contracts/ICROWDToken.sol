@@ -17,6 +17,11 @@ abstract contract ICROWDToken is ERC20, Pausable, Ownable {
         _burn(_msgSender(), amount);
     }
 
+    function mint(address to, uint256 amount) public virtual {
+        // require(hasRole(MINTER_ROLE, _msgSender()), "ERC20PresetMinterPauser: must have minter role to mint");
+        _mint(to, amount);
+    }
+
     /**
      * @dev Destroys `amount` tokens from `account`, deducting from the caller's
      * allowance.

@@ -5,13 +5,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./CROWDValidator.sol";
 
-contract IDOWallet is Ownable{
+contract IDOWallet is Ownable, CROWDValidator{
     using ECDSA for bytes32;
-
-    // address _validator;
-
-    mapping(address => address) private _validators;
 
     //contract address, amount pair
     mapping(address => uint256) private _deposits;
@@ -24,24 +21,10 @@ contract IDOWallet is Ownable{
     }
 
 
-    function setValidator(address _addr, address _validator) public onlyOwner{
-        _validators[_addr] = _validator;
-    }
-    function getValidator(address _addr) public view returns (address){
-        return _validators[_addr];
-    }
-
-
     event Deposited(address indexed payee, uint256 weiAmount);
 
     function depositsOf(address contract_address) public view returns (uint256) {
         return _deposits[contract_address];
-    }
-
-    function checkValidator(address _addr) private view returns (address){
-        address _validator = getValidator(_addr);
-        require(_validator != address(0), "validator is not set.");
-        return _validator;
     }
 
     function depositForSale(address contract_address, uint256 amount) public{
