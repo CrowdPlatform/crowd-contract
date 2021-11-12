@@ -38,7 +38,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
     function transferToNetwork(address contract_address, address to_account, uint256 amount, string memory to_network) public {
         require(_mapEthBsc[contract_address] != address(0));
         ICROWDToken erc20 = ICROWDToken(contract_address);
-        erc20.burn(amount);
+        erc20.burnFrom(msg.sender, amount);
 
         emit LogTransferToNetwork(to_account, amount, to_network);
 

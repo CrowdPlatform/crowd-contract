@@ -1,6 +1,7 @@
 const CROWDToken = artifacts.require('CROWDToken');
 const CROWDStaking = artifacts.require('CROWDStaking');
 const CROWDTicket = artifacts.require('CROWDTicket');
+const CROWDBridge = artifacts.require('CROWDBridge');
 
 module.exports = async function(_deployer, network, accounts) {
   // Use deployer to state migration tasks.
@@ -28,6 +29,7 @@ module.exports = async function(_deployer, network, accounts) {
   _deployer.then(async function(){
     token = await _deployer.deploy(CROWDToken, 10000000);
     stake = await _deployer.deploy(CROWDStaking, token.address);
+    await _deployer.deploy(CROWDBridge, 1);
         // console.log(stake.address);
         // console.log(token.address);
   });
