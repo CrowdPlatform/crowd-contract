@@ -44,7 +44,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
 
     }
 
-    function getHash(string memory message, uint256 id) internal pure returns (bytes32){
+    function getHash(string memory message, uint256 id) public pure returns (bytes32){
         return  keccak256(
              abi.encodePacked(
                 message,
@@ -53,7 +53,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
     }
 
     function confirm(address contract_address, uint256 id, string memory from_network, bytes32 txhash, uint256 amount, bytes memory signature) public {
-        require(isProcessed(id) == false);
+        require(isProcessed(id) == false, "already processed id");
        
         require(_mapEthBsc[contract_address] != address(0));
         ICROWDToken erc20 = ICROWDToken(contract_address);
@@ -72,7 +72,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
         );        
         address signer = _hash.recover(signature);
         
-        require(signer == msg.sender, "invalid signer");
+        require(signer == getValidator(contract_address), "invalid signer");
 
         setProcessed(id);
 
