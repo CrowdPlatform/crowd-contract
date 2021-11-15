@@ -34,4 +34,12 @@ abstract contract CROWDValidator is Ownable{
         assembly { _size := extcodesize(_addr) }
         return _size > 0;
     }
+
+    function isProcessed(uint256 id) internal view returns (bool){
+        return _processed[id];
+    }
+
+    function setProcessed(uint256 id) internal{
+        _processed[id] = true;
+    }
 }

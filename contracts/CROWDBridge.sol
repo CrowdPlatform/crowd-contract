@@ -44,24 +44,39 @@ contract CrowdBridge is Ownable, CROWDValidator{
 
     }
 
-    function confirm(address contract_address, uint256 id, string memory from_network, bytes32 txhash, address account, uint256 amount, bytes memory signature) public {
+    function getHash(string memory message, uint256 id) internal pure returns (bytes32){
+        return  keccak256(
+             abi.encodePacked(
+                message,
+                id
+        ));
+    }
+
+    function confirm(address contract_address, uint256 id, string memory from_network, bytes32 txhash, uint256 amount, bytes memory signature) public {
+        require(isProcessed(id) == false);
+       
         require(_mapEthBsc[contract_address] != address(0));
         ICROWDToken erc20 = ICROWDToken(contract_address);
-        erc20.mint(account, amount);//TODO: role
+        erc20.mint(msg.sender, amount);//TODO: role
 
         //TODO: verify signature
+
         bytes32 _hash = keccak256(
             abi.encodePacked(
-                "transfer",
-                id,
-                msg.sender,
-                contract_address,
-                amount
+                "\x19Ethereum Signed Message:\n32",                
+                getHash(
+                    "transfer",
+                    id
+                )
             )
         );        
         address signer = _hash.recover(signature);
-        require(signer == getValidator(contract_address));
+        
+        require(signer == msg.sender, "invalid signer");
 
-        emit LogTransferFromNetwork(from_network, txhash, account, amount);
+        setProcessed(id);
+
+
+        emit LogTransferFromNetwork(from_network, txhash, msg.sender, amount);
     }
 }
