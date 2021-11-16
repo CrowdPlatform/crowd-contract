@@ -4,13 +4,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./ECDSA.sol";
+// import "./ECDSA.sol";
 import "./CROWDValidator.sol";
 import "./ICROWDToken.sol";
 
 
 contract CrowdBridge is Ownable, CROWDValidator{    
-    using ECDSA for bytes32;
 
     uint network_type;
     constructor(uint network){
@@ -19,6 +18,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
 
     mapping(address => address) _mapEthBsc;
 
+    //Don't accept ETH or BNB
     receive () payable external{
         revert();
     }
@@ -41,18 +41,11 @@ contract CrowdBridge is Ownable, CROWDValidator{
     }
 
     function transferFromNetwork(address contract_address, uint256 id, string memory from_network, bytes32 txhash, uint256 amount, bytes memory signature) public {
-        require(isProcessed(id) == false, "already processed id");
        
         require(_mapEthBsc[contract_address] != address(0));
 
         //verify signature
-        bytes32 _hash = ECDSA.getHash("transfer",id,msg.sender,amount).toEthSignedMessageHash();
-  
-        address signer = _hash.recover(signature);
-        
-        require(signer == getValidator(contract_address), "invalid signer");
-
-        setProcessed(id);
+        verify("transfer", id, msg.sender, amount, contract_address, getValidator(contract_address), signature);
 
         ICROWDToken erc20 = ICROWDToken(contract_address);
         erc20.mintTo(msg.sender, amount);//TODO: role

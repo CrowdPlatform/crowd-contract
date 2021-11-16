@@ -64,7 +64,7 @@ contract('CROWD, Bridge', (accounts, network) => {
         console.log(transferTo.tx);
 
 
-        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString());
+        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString(), contract_address);
         console.log(encode_packed);
 
         msg_hashed =  web3.utils.soliditySha3(encode_packed);

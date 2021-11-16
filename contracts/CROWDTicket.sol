@@ -22,14 +22,11 @@ contract CROWDTicket is ICROWDToken, CROWDValidator{
         transferFrom(msg.sender, account, amount);
     }
 
-    function withdraw(address account, uint256 amount, uint256 id, bytes memory signature) public{
-        bytes32 _hash = ECDSA.getHash("ticketclaim",id,msg.sender,amount).toEthSignedMessageHash();
-  
-        address signer = _hash.recover(signature);
-        
-        require(signer == getValidator(address(this)), "invalid signer");
+    function withdraw(uint256 amount, uint256 id, bytes memory signature) public{
 
-        transfer(account, amount);
+        verify("ticketclaim", id, msg.sender, amount, address(this), getValidator(address(this)), signature);
+
+        transfer(msg.sender, amount);
     }
 
 }

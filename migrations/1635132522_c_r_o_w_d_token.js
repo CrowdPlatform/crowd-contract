@@ -27,7 +27,7 @@ module.exports = async function(_deployer, network, accounts) {
   }
 
   _deployer.then(async function(){
-    token = await _deployer.deploy(CROWDToken, 10000000);
+    token = await _deployer.deploy(CROWDToken, "CROWD.com", "CWD", 10000000);
     stake = await _deployer.deploy(CROWDStaking, token.address);
     await _deployer.deploy(CROWDBridge, 1);
         // console.log(stake.address);

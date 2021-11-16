@@ -2,14 +2,10 @@
 
 pragma solidity ^0.8.0;
 
-// import "./ECDSA.sol";
+import "./ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 abstract contract CROWDValidator is Ownable{
-    // using ECDSA for bytes32;
-
-    // address _validator;
-
     mapping(address => address) private _validators;
 
     mapping(uint256 => bool) private _processed;
@@ -41,5 +37,11 @@ abstract contract CROWDValidator is Ownable{
 
     function setProcessed(uint256 id) internal{
         _processed[id] = true;
+    }
+
+    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, address signer, bytes memory signature) internal {
+        require(isProcessed(id) == false, "already processed id");
+        ECDSA.verify(message, id, addr, amount, addr2, signer, signature);
+        setProcessed(id);
     }
 }

@@ -6,8 +6,8 @@ import "./ICROWDToken.sol";
 
 contract CROWDToken is ICROWDToken{
 
-    constructor(uint256 amount) ERC20("CROWD.com", "CROWD") {
-        _mint(_msgSender(), amount*10**decimals());
+    constructor(string memory _name, string memory _symbol, uint256 _amount) ERC20(_name, _symbol) {
+        _mint(_msgSender(), _amount*10**decimals());
     }
 
     //Don't accept ETH or BNB

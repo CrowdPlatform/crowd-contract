@@ -2,13 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CROWDValidator.sol";
 
 contract IDOWallet is Ownable, CROWDValidator{
-    using ECDSA for bytes32;
 
     //contract address, amount pair
     mapping(address => uint256) private _deposits;
@@ -38,7 +36,6 @@ contract IDOWallet is Ownable, CROWDValidator{
     }
 
     function withdraw(address contract_address, uint256 amount, uint256 id, bytes memory signature) public{
-        require(_processed[id] == false);
         address _validator = checkValidator(contract_address);
 
         IERC20 erc20 = IERC20(contract_address);
@@ -49,23 +46,10 @@ contract IDOWallet is Ownable, CROWDValidator{
         require(_deposits[contract_address] >= amount);
 
 
-        //TODO: verify signature
-        bytes32 _hash = keccak256(
-        abi.encodePacked(
-            "withdrawERC20",
-            id,
-            msg.sender,
-            contract_address,
-            amount
-        )
-        );        
-        address signer = _hash.recover(signature);
-
-        require(signer == _validator, "invalid signer");
+        //verify signature
+        verify("withdrawIDO", id, msg.sender, amount, contract_address, _validator, signature);
 
         erc20.transfer(msg.sender, amount);
-
-        _processed[id] = true;
     }
 
     function save(address _addr) public onlyOwner{

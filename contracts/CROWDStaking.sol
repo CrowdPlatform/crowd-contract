@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
-
 import "./ICROWDToken.sol";
 
 contract CROWDStaking is Context{
@@ -12,9 +10,6 @@ contract CROWDStaking is Context{
     address public owner;
 
     ICROWDToken public crowd;
-
-    address public devaddr;
-    address public rewarder;
 
     uint256 _totalStaking;
     mapping(address =>uint256) public stakingBalance;
@@ -24,6 +19,10 @@ contract CROWDStaking is Context{
 
     constructor(ICROWDToken _crowd){
         crowd = _crowd;
+    }
+    //Don't accept ETH or BNB
+    receive () payable external{
+        revert();
     }
 
     function totalStaking() public view returns (uint256){
@@ -37,7 +36,7 @@ contract CROWDStaking is Context{
     function stakeTokens(uint256 amount) public{
         crowd.transferFrom(_msgSender(), address(this), amount);
 
-        stakingBalance[_msgSender()] = stakingBalance[_msgSender()] + amount;
+        stakingBalance[_msgSender()] += amount;
         _totalStaking += amount;
 
         emit Staking(_msgSender(), amount);
@@ -46,7 +45,7 @@ contract CROWDStaking is Context{
     function unstakeTokens(uint256 amount) public{
         require(amount >= stakingBalance[_msgSender()]);
         crowd.transfer(_msgSender(), amount);
-        stakingBalance[_msgSender()] = stakingBalance[_msgSender()] - amount;
+        stakingBalance[_msgSender()] -= amount;
         _totalStaking -= amount;
         emit Unstaking(_msgSender(), amount);
     }
