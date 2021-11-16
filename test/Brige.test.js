@@ -42,6 +42,8 @@ contract('CROWD, Bridge', (accounts, network) => {
         contract_address = this.crowd.address;
         let signer = accounts[0];
 
+        await this.crowd.addMinters([this.crowd.address]);
+
         await this.bridge.resigtryMapEthBsc(contract_address, this.crowd.address);
 
         await this.bridge.setValidator(contract_address, signer);
@@ -62,7 +64,7 @@ contract('CROWD, Bridge', (accounts, network) => {
         console.log(transferTo.tx);
 
 
-        encode_packed = web3.utils.encodePacked("transfer", 1);
+        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString());
         console.log(encode_packed);
 
         msg_hashed =  web3.utils.soliditySha3(encode_packed);
@@ -74,8 +76,24 @@ contract('CROWD, Bridge', (accounts, network) => {
         console.log(sig);
 
 
+        let sining = web3.eth.accounts.recover(msg_hashed, sig);
+
+        assert.equal(sining, signer);
+
         // // address contract_address, uint256 id, string memory from_network, bytes32 txhash,uint256 amount, bytes memory signature
-        await this.bridge.confirm(contract_address, 1, "ethereum", transferTo.tx, transferToAmount.toString(), sig, {from: accounts[1]});
+        await this.bridge.transferFromNetwork(contract_address, 1, "ethereum", transferTo.tx, transferToAmount.toString(), sig, {from: accounts[1]});
+
+
+        //Fail Test
+        let failed = false;
+        try {
+            await this.bridge.transferFromNetwork(contract_address, 1, "ethereum", transferTo.tx, transferToAmount.toString(), sig, {from: accounts[1]});            
+        } catch (error) {
+            console.log(error.reason);
+            failed = true;
+        } finally{
+            assert.equal(failed, true);
+        }
 
     });
 
