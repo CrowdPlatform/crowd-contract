@@ -2,11 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+// import "./ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 abstract contract CROWDValidator is Ownable{
-    using ECDSA for bytes32;
+    // using ECDSA for bytes32;
 
     // address _validator;
 
