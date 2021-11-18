@@ -63,8 +63,10 @@ contract('CROWD, Bridge', (accounts, network) => {
         let transferTo = await this.bridge.transferToNetwork(this.crowd.address, accounts[1], transferToAmount.toString(), 'ethereum', {from: accounts[1]});
         console.log(transferTo.tx);
 
+        let expired_at = 0;
+        let id = 1;
 
-        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString(), contract_address);
+        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString(), contract_address, expired_at);
         console.log(encode_packed);
 
         msg_hashed =  web3.utils.soliditySha3(encode_packed);
@@ -80,14 +82,38 @@ contract('CROWD, Bridge', (accounts, network) => {
 
         assert.equal(sining, signer);
 
-        // // address contract_address, uint256 id, string memory from_network, bytes32 txhash,uint256 amount, bytes memory signature
-        await this.bridge.transferFromNetwork(contract_address, 1, "ethereum", transferTo.tx, transferToAmount.toString(), sig, {from: accounts[1]});
 
-
-        //Fail Test
+        //Fail Test for change expired_at
         let failed = false;
         try {
-            await this.bridge.transferFromNetwork(contract_address, 1, "ethereum", transferTo.tx, transferToAmount.toString(), sig, {from: accounts[1]});            
+            await this.bridge.transferFromNetwork(contract_address, id, "ethereum", transferTo.tx, transferToAmount.toString(), expired_at+1, sig, {from: accounts[1]});            
+        } catch (error) {
+            console.log(error.reason);
+            failed = true;
+        } finally{
+            assert.equal(failed, true);
+        }
+
+        // // address contract_address, uint256 id, string memory from_network, bytes32 txhash,uint256 amount, bytes memory signature
+        await this.bridge.transferFromNetwork(contract_address, id, "ethereum", transferTo.tx, transferToAmount.toString(), expired_at, sig, {from: accounts[1]});
+
+
+        //Fail Test for id
+        failed = false;
+        try {
+            await this.bridge.transferFromNetwork(contract_address, id, "ethereum", transferTo.tx, transferToAmount.toString(), expired_at, sig, {from: accounts[1]});            
+        } catch (error) {
+            console.log(error.reason);
+            failed = true;
+        } finally{
+            assert.equal(failed, true);
+        }
+
+
+        //Fail Test for invalid signer
+        failed = false;
+        try {
+            await this.bridge.transferFromNetwork(contract_address, id+1, "ethereum", transferTo.tx, transferToAmount.toString(), expired_at, sig, {from: accounts[1]});            
         } catch (error) {
             console.log(error.reason);
             failed = true;

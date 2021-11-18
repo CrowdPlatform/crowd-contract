@@ -39,9 +39,9 @@ contract CROWDPool is Context, Ownable, CROWDValidator{
 
     }
 
-    function buy(uint256 id, address token_address, uint256 amount, bytes memory signature) public{
+    function buy(uint256 id, address token_address, uint256 amount, uint256 expired_at, bytes memory signature) public{
 
-        verify("buy", id, msg.sender, amount, token_address, getValidator(address(this)), signature);
+        verify("buy", id, msg.sender, amount, token_address, expired_at, getValidator(address(this)), signature);
     }
 
 }

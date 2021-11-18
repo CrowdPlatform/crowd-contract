@@ -39,9 +39,9 @@ abstract contract CROWDValidator is Ownable{
         _processed[id] = true;
     }
 
-    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, address signer, bytes memory signature) internal {
+    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, uint256 expired_at, address signer, bytes memory signature) internal {
         require(isProcessed(id) == false, "already processed id");
-        ECDSA.verify(message, id, addr, amount, addr2, signer, signature);
+        ECDSA.verify(message, id, addr, amount, addr2, expired_at, signer, signature);
         setProcessed(id);
     }
 }

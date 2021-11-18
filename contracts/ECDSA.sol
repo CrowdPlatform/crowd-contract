@@ -141,22 +141,25 @@ library ECDSA {
         return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
     }
 
-    function getHash(string memory message, uint256 id, address addr, uint256 amount, address addr2) internal pure returns (bytes32){
+    function getHash(string memory message, uint256 id, address addr, uint256 amount, address addr2, uint256 expired_at) internal pure returns (bytes32){
         return  keccak256(
              abi.encodePacked(
                 message,
                 id, 
                 addr,
                 amount, 
-                addr2
+                addr2,
+                expired_at
         ));
     }    
 
-    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, address signer, bytes memory signature) internal pure{
+    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, uint256 expired_at, address signer, bytes memory signature) internal view{
         //verify signature
-        bytes32 _hash = toEthSignedMessageHash(getHash(message, id, addr, amount, addr2));
+        bytes32 _hash = toEthSignedMessageHash(getHash(message, id, addr, amount, addr2, expired_at));
         address recover_signer = recover(_hash, signature);
-
         require(signer == recover_signer, "invalid signer");
+
+        if(expired_at > 0)
+            require(block.timestamp <= expired_at, "expired signature");
     }
 }
