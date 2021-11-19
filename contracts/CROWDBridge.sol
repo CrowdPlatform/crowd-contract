@@ -45,7 +45,7 @@ contract CrowdBridge is Ownable, CROWDValidator{
         require(_mapEthBsc[contract_address] != address(0));
 
         //verify signature
-        verify("transfer", id, msg.sender, amount, contract_address, expired_at, getValidator(contract_address), signature);
+        verify("transferFromNetwork", id, msg.sender, amount, contract_address, expired_at, getValidator(contract_address), signature);
 
         ICROWDToken erc20 = ICROWDToken(contract_address);
         erc20.mintTo(msg.sender, amount);//TODO: role

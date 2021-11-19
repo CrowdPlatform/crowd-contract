@@ -37,7 +37,7 @@ contract IDOWallet is Ownable, CROWDValidator{
         emit Deposited(contract_address, amount);
     }
 
-    function withdraw(address contract_address, uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
+    function claimIDO(address contract_address, uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
         address _validator = checkValidator(contract_address);
 
         IERC20 erc20 = IERC20(contract_address);
@@ -49,7 +49,7 @@ contract IDOWallet is Ownable, CROWDValidator{
 
 
         //verify signature
-        verify("withdrawIDO", id, msg.sender, amount, contract_address, expired_at, _validator, signature);
+        verify("claimIDO", id, msg.sender, amount, contract_address, expired_at, _validator, signature);
 
         erc20.transfer(msg.sender, amount);
     }
@@ -63,14 +63,14 @@ contract IDOWallet is Ownable, CROWDValidator{
     }
 
     //for ticket
-    function depositTicket(address account, uint256 amount) public{
-        ticket.transferFrom(msg.sender, account, amount);
+    function depositTicket(uint256 amount) public{
+        ticket.transferFrom(msg.sender, address(this), amount);
+        //TODO: ticket balance
     }
 
     function withdrawTicket(uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
-
-        verify("ticketclaim", id, msg.sender, amount, address(this), expired_at, getValidator(address(this)), signature);
-
+        verify("withdrawTicket", id, msg.sender, amount, address(this), expired_at, getValidator(address(this)), signature);
+        
         ticket.transfer(msg.sender, amount);
     }
 
