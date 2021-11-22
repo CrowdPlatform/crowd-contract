@@ -26,7 +26,7 @@ const HDWalletProvider = require('truffle-hdwallet-provider');
 require('dotenv').config();
 
 const PrivateKeys = JSON.parse(process.env.privatekeys);
-console.log(PrivateKeys);
+// console.log(PrivateKeys);
 
 module.exports = {
   /**
