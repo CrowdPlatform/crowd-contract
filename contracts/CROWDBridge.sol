@@ -4,10 +4,8 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// import "./ECDSA.sol";
 import "./CROWDValidator.sol";
 import "./ICROWDToken.sol";
-
 
 contract CrowdBridge is Ownable, CROWDValidator{    
 
@@ -33,22 +31,27 @@ contract CrowdBridge is Ownable, CROWDValidator{
 
     function transferToNetwork(address contract_address, address to_account, uint256 amount, string memory to_network) public {
         require(_mapEthBsc[contract_address] != address(0));
-        ICROWDToken erc20 = ICROWDToken(contract_address);
-        erc20.burnFrom(msg.sender, amount);
+        
+        ICROWDToken(contract_address).burnFrom(msg.sender, amount);
 
         emit LogTransferToNetwork(to_account, amount, to_network);
-
     }
 
-    function transferFromNetwork(address contract_address, uint256 id, string memory from_network, bytes32 txhash, uint256 amount, uint256 expired_at, bytes memory signature) public {
+    function transferFromNetwork(
+        address contract_address, 
+        uint256 id, 
+        string memory from_network, 
+        bytes32 txhash, 
+        uint256 amount, 
+        uint256 expired_at, 
+        bytes memory signature) public {
        
         require(_mapEthBsc[contract_address] != address(0));
 
         //verify signature
         verify("transferFromNetwork", id, msg.sender, amount, contract_address, expired_at, getValidator(contract_address), signature);
-
-        ICROWDToken erc20 = ICROWDToken(contract_address);
-        erc20.mintTo(msg.sender, amount);//TODO: role
+        
+        ICROWDToken(contract_address).mint(msg.sender, amount);
 
         emit LogTransferFromNetwork(from_network, txhash, msg.sender, amount);
     }

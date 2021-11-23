@@ -77,10 +77,6 @@ abstract contract ICROWDToken is ERC20, Pausable, Ownable, HasMinters {
         _burn(_msgSender(), amount);
     }
 
-    function mintTo(address to, uint256 amount) external{
-        _mint(to, amount);
-    }
-
     function mint(address to, uint256 amount) public virtual onlyMinter{
         _mint(to, amount);
     }

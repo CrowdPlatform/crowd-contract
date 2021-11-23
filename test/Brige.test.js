@@ -42,8 +42,6 @@ contract('CROWD, Bridge', (accounts, network) => {
         contract_address = this.crowd.address;
         let signer = accounts[0];
 
-        await this.crowd.addMinters([this.crowd.address]);
-
         await this.bridge.resigtryMapEthBsc(contract_address, this.crowd.address);
 
         await this.bridge.setValidator(contract_address, signer);
@@ -63,10 +61,14 @@ contract('CROWD, Bridge', (accounts, network) => {
         let transferTo = await this.bridge.transferToNetwork(this.crowd.address, accounts[1], transferToAmount.toString(), 'ethereum', {from: accounts[1]});
         console.log(transferTo.tx);
 
+        balance = await this.crowd.balanceOf.call(this.bridge.address);
+        console.log('bridge balance : ' + balance.toString());
+
+
         let expired_at = 0;
         let id = 1;
 
-        encode_packed = web3.utils.encodePacked("transfer", 1, accounts[1], transferToAmount.toString(), contract_address, expired_at);
+        encode_packed = web3.utils.encodePacked("transferFromNetwork", 1, accounts[1], transferToAmount.toString(), contract_address, expired_at);
         console.log(encode_packed);
 
         msg_hashed =  web3.utils.soliditySha3(encode_packed);
@@ -78,9 +80,9 @@ contract('CROWD, Bridge', (accounts, network) => {
         console.log(sig);
 
 
-        let sining = web3.eth.accounts.recover(msg_hashed, sig);
+        let recover_signer = web3.eth.accounts.recover(msg_hashed, sig);
 
-        assert.equal(sining, signer);
+        assert.equal(recover_signer, signer);
 
 
         //Fail Test for change expired_at
@@ -94,9 +96,16 @@ contract('CROWD, Bridge', (accounts, network) => {
             assert.equal(failed, true);
         }
 
+        balance = await this.crowd.balanceOf.call(accounts[1]);
+        console.log(balance.toString());
+
+        await this.crowd.addMinters([this.bridge.address]);
+
         // // address contract_address, uint256 id, string memory from_network, bytes32 txhash,uint256 amount, bytes memory signature
         await this.bridge.transferFromNetwork(contract_address, id, "ethereum", transferTo.tx, transferToAmount.toString(), expired_at, sig, {from: accounts[1]});
-
+        balance = await this.crowd.balanceOf.call(accounts[1]);
+        console.log(balance.toString());
+        assert.equal(balance, 2*decimal);
 
         //Fail Test for id
         failed = false;
