@@ -43,6 +43,7 @@ contract('CROWD, Bridge', (accounts, network) => {
         let signer = accounts[0];
 
         await this.bridge.resigtryMapEthBsc(contract_address, this.crowd.address);
+        
 
         await this.bridge.setValidator(contract_address, signer);
 
