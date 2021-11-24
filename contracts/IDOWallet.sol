@@ -9,7 +9,9 @@ import "./CROWDValidator.sol";
 contract IDOWallet is Ownable, CROWDValidator{
 
     IERC20 ticket;
-
+    constructor(IERC20 _ticket){
+        ticket = _ticket;
+    }
     //contract address, amount pair
     mapping(address => uint256) private _deposits;
 

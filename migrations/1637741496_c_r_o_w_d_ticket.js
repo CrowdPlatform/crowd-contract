@@ -1,10 +1,10 @@
-const CROWDToken = artifacts.require('CROWDToken');
-const CROWDStaking = artifacts.require('CROWDStaking');
+
+const CROWDTicket = artifacts.require('CROWDTicket');
 
 module.exports = async function(_deployer, network, accounts) {
   // Use deployer to state migration tasks.
   // let ownerAddress = web3.eth.accounts[0];
-  console.log('deploy CROWDStaking contract');
+  console.log('deploy CROWDTicket contract');
 
 
   if(network === 'bscTestnet')  {
@@ -12,12 +12,14 @@ module.exports = async function(_deployer, network, accounts) {
 
     if(process.env.BSCTestnetNew === 'true')
     {
-      this.crowd = await CROWDToken.at('0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');
-      this.stake = await _deployer.deploy(CROWDStaking, this.crowd.address);
+      await _deployer.deploy(CROWDTicket, 1000000);
     }
     return;    
   }
   else if(network === 'ropsten'){
     return;
   }
+
+  await _deployer.deploy(CROWDTicket, 1000000);
+
 };
