@@ -6,7 +6,7 @@ const CROWDBridge = artifacts.require('CROWDBridge');
 module.exports = async function(_deployer, network, accounts) {
   // Use deployer to state migration tasks.
   // let ownerAddress = web3.eth.accounts[0];
-  console.log('deploy CROWDToken, CROWDStaking, CROWDBridge contract');
+  console.log('deploy CROWDToken, CROWDBridge contract');
 
 
   if(network === 'bscTestnet')  {

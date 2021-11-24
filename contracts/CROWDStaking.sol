@@ -42,7 +42,7 @@ contract CROWDStaking{
     }
 
     function unstakeTokens(uint256 amount) public{
-        require(amount >= stakingBalance[msg.sender]);
+        require(amount <= stakingBalance[msg.sender], 'insufficient balance');
         crowd.transfer(msg.sender, amount);
         stakingBalance[msg.sender] -= amount;
         _totalStaking -= amount;
