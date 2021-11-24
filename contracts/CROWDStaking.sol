@@ -2,10 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Context.sol";
 import "./ICROWDToken.sol";
 
-contract CROWDStaking is Context{
+contract CROWDStaking{
     string public name = "CROWD Staking";
     address public owner;
 
@@ -34,19 +33,19 @@ contract CROWDStaking is Context{
     }
 
     function stakeTokens(uint256 amount) public{
-        crowd.transferFrom(_msgSender(), address(this), amount);
+        crowd.transferFrom(msg.sender, address(this), amount);
 
-        stakingBalance[_msgSender()] += amount;
+        stakingBalance[msg.sender] += amount;
         _totalStaking += amount;
 
-        emit Staking(_msgSender(), amount);
+        emit Staking(msg.sender, amount);
     }
 
     function unstakeTokens(uint256 amount) public{
-        require(amount >= stakingBalance[_msgSender()]);
-        crowd.transfer(_msgSender(), amount);
-        stakingBalance[_msgSender()] -= amount;
+        require(amount >= stakingBalance[msg.sender]);
+        crowd.transfer(msg.sender, amount);
+        stakingBalance[msg.sender] -= amount;
         _totalStaking -= amount;
-        emit Unstaking(_msgSender(), amount);
+        emit Unstaking(msg.sender, amount);
     }
 }
