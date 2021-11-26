@@ -49,6 +49,7 @@ contract IDOWallet is Ownable, CROWDValidator{
 
         require(_deposits[contract_address] >= amount);
 
+        //TODO: check invest contract?
 
         //verify signature
         verify("claimIDO", id, msg.sender, amount, contract_address, expired_at, _validator, signature);
