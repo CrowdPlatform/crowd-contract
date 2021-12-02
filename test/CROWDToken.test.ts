@@ -9,9 +9,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 const {deployContract} = waffle;
 
-// const CROWDToken = artifacts.require('CROWDToken');
-// const CROWDStaking = artifacts.require('CROWDStaking');
-
 describe('CROWD, Stacking, Ticket', () => {
     let crowdToken: CROWDToken;
     let crowdStaking: CROWDStaking;
