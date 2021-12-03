@@ -41,7 +41,8 @@
   },
   "scripts": {
     "build": "yarn hardhat compile",
-    "test": "yarn hardhat test"
+    "test": "yarn hardhat test",
+    "testInvest": "yarn hardhat test test/CrowdInvest.test.ts"
   },
   "dependencies": {
     "builder": "^5.0.0",
