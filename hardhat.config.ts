@@ -31,6 +31,14 @@ const config: HardhatUserConfig = {
       url: process.env.ROPSTEN_URL || "",
       accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys)
     },
+    bscTestnet: {
+      url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
+      accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys)
+      // network_id: 97,
+      // confirmations: 0,
+      // timeoutBlocks: 200,
+      // skipDryRun: true
+    },        
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

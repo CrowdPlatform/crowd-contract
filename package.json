@@ -40,7 +40,8 @@
     "typescript": "^4.3.5"
   },
   "scripts": {
-    "build": "yarn hardhat compile"
+    "build": "yarn hardhat compile",
+    "test": "yarn hardhat test"
   },
   "dependencies": {
     "builder": "^5.0.0",
