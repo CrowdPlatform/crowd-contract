@@ -14,6 +14,7 @@ import { toASCII } from "punycode";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import { fail } from "assert";
+import exp from "constants";
 
 const { deployContract } = waffle;
 
@@ -183,9 +184,11 @@ describe('CROWD Invest Pool', () => {
             await busdToken.transfer(test1.address, busd_transfer);
             await busdToken.connect(test1).approve(crowdInvest.address, approve_amount);
 
+            expect(await crowdInvest.getReciver()).equal(receiver);
+
             // await testInvestPool(false, test1, 1, decimal);
         });
-        delay(4000);
+        delay(2000);
 
         it('invest pool', async () => {
 
@@ -212,11 +215,11 @@ describe('CROWD Invest Pool', () => {
             await testInvestPool(true, test1, id, invest_amount);
 
             var use_ticket = invest_amount.div(decimal).div(main_per_ticket).toNumber();
-            console.log(invest_amount.toString())
+            // console.log(invest_amount.toString())
             if (invest_amount.mod(decimal.mul(main_per_ticket)).eq(0) == false)
                 use_ticket++;
 
-            console.log(invest_amount.toString())
+            // console.log(invest_amount.toString())
 
             expect(await busdToken.balanceOf(receiver)).deep.equal(invest_amount);
             expect(await busdToken.balanceOf(test1.address)).deep.equal(busd_transfer.sub(invest_amount));

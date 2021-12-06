@@ -24,7 +24,7 @@ async function main() {
 
     console.log(accounts[0].address);
 
-    crowdInvest = await ethers.getContractAt("CROWDInvest",'0xf45f0f4c7f45cbc21d416344ced04e9c36be5727');
+    crowdInvest = await ethers.getContractAt("CROWDInvest",'0x842BA0C6b7eaE7559cbA867D1EFc771df457866C');
 
 
     if(!crowdInvest){
@@ -37,6 +37,10 @@ async function main() {
     }
     console.log(crowdInvest.address);
 
+
+    // await crowdInvest.setReciever(accounts[2].address);
+    var receiver = await crowdInvest.getReciver();
+    console.log(receiver);
     // await createPool2();
     // var poolInfo = await crowdInvest.getPool(6);
     // console.log(poolInfo);
@@ -47,7 +51,7 @@ async function main() {
     // var whitelist = await crowdInvest.getWhiteList(id);
     // console.log(whitelist);
     // if(!whitelist){
-        await registWhiteList();
+        // await registWhiteList();
     // }
 }
 

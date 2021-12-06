@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./CROWDValidator.sol";
+// import "./CROWDValidator.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "hardhat/console.sol";
 
-contract CROWDInvest is Context, Ownable, CROWDValidator {
+contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     // IERC20 _busd;
 
     address token_reciever;
@@ -194,5 +194,8 @@ contract CROWDInvest is Context, Ownable, CROWDValidator {
 
     function setReciever(address _addr) public onlyOwner {
         token_reciever = _addr;
+    }   
+    function getReciver()public view returns(address){
+        return token_reciever;
     }
 }
