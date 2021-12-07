@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build",
+			"detail": "yarn hardhat compile"
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"group": "test",
+			"problemMatcher": [],
+			"label": "npm: test",
+			"detail": "yarn hardhat test"
+		},
+		{
+			"type": "npm",
+			"script": "test - invest",
+			"group": "test",
+			"problemMatcher": [],
+			"label": "npm: test",
+			"detail": "yarn testInvest"
+		},
+	]
+}

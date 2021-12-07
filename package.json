@@ -42,7 +42,11 @@
   "scripts": {
     "build": "yarn hardhat compile",
     "test": "yarn hardhat test",
-    "testInvest": "yarn hardhat test test/CrowdInvest.test.ts"
+    "testInvest": "yarn hardhat test test/CrowdInvest.test.ts",
+    "ropstenBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.ropsten.ts --network ropsten",
+    "bscTestBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.bsc.ts --network bscTestnet",
+    "verifyBscInvest":"yarn hardhat verify 0x69e3C8B89bD520422b34499ed5879258437b65C4 --network bscTestnet"
+
   },
   "dependencies": {
     "builder": "^5.0.0",

@@ -15,7 +15,7 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     address token_reciever;
 
     mapping(uint256 => IDOPool) _investPool;
-    mapping(uint256 => address[]) _investPoolUsers;
+    // mapping(uint256 => address[]) _investPoolUsers;
     // mapping(address => mapping(uint256 => uint256)) _users;
     // mapping(uint256 => mapping(address => uint256)) _whiteList;
     mapping(uint256 => address[]) _whiteListUsers;
@@ -67,10 +67,10 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             "registWhiteList : invalid array counts."
         );
 
-        require(
-            _investPool[id].ts_start_time > block.timestamp,
-            "registWhiteList: sale started."
-        );
+        // require(
+        //     _investPool[id].ts_start_time > block.timestamp,
+        //     "registWhiteList: sale started."
+        // );
 
         _whiteListUsers[id] = users;
         _whiteListTickets[id] = amounts;
@@ -115,10 +115,10 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             ts_start_time < ts_finish_time,
             "createPool: start and finish are invalid."
         );
-        require(
-            ts_start_time > block.timestamp,
-            "createPool: start time is invalid."
-        );
+        // require(
+        //     ts_start_time > block.timestamp,
+        //     "createPool: start time is invalid."
+        // );
 
         _investPool[id] = IDOPool(
             main_per_ticket,
@@ -144,9 +144,9 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     function removePool(uint256 id) public onlyOwner {
         require(_investPool[id].total_amount != 0x0, "not exists id.");
         delete _investPool[id];
-        delete _investPoolUsers[id];
-        // delete _users[msg.sender][id];
-        // delete _whiteList[id];
+        // delete _investPoolUsers[id];
+        delete _whiteListTickets[id];
+        delete _whiteListUsers[id];
     }
 
     function finishPool(uint256 id) public onlyOwner {}
@@ -159,7 +159,7 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             "investPool: not exists id."
         );
 
-        IDOPool memory pool = _investPool[invest_id];
+        IDOPool storage pool = _investPool[invest_id];
         require(pool.state == 0, "investPool: invalid state.");
         require(pool.invested_amount + amount <= pool.total_amount, "investPool: invest amount is over.");
         require(
@@ -171,8 +171,9 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             "investPool: This investment pool has already been terminated."
         );
 
-        uint256 use_ticket = amount / 10**18 / pool.main_per_ticket;
-        if(amount % (pool.main_per_ticket*10**18) != 0)
+        require(pool.main_per_ticket != 0, "investPool: main_per_ticket is invalid");
+        uint256 use_ticket = amount / 1e18 / uint256(pool.main_per_ticket);
+        if(amount % (uint256(pool.main_per_ticket)*1e18) != 0)
             use_ticket++;
         // console.log("use_ticket : %s", use_ticket);
 
@@ -187,7 +188,6 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
 
         pool.invested_amount += amount;
         _whiteListTickets[invest_id][uint256(idx)] -= use_ticket;
-        _investPoolUsers[invest_id].push(msg.sender);
 
         emit InvestPool(invest_id, msg.sender, amount, use_ticket);
     }
