@@ -3,11 +3,9 @@
 pragma solidity ^0.8.0;
 
 import "./ICROWDToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CROWDStaking{
-    string public name = "CROWD Staking";
-    address public owner;
-
+contract CROWDStaking is Ownable{
     ICROWDToken public crowd;
 
     uint256 _totalStaking;
@@ -16,12 +14,17 @@ contract CROWDStaking{
     event Staking(address indexed user, uint256 amount);
     event Unstaking(address indexed user, uint256 amount);
 
-    constructor(ICROWDToken _crowd){
-        crowd = _crowd;
-    }
+
     //Don't accept ETH or BNB
     receive () payable external{
         revert();
+    }
+
+    function setToken(address token_contract) public onlyOwner{
+        crowd = ICROWDToken(token_contract);
+    }
+    function getToken() public view returns (address){
+        return address(crowd);
     }
 
     function totalStaking() public view returns (uint256){
@@ -42,7 +45,7 @@ contract CROWDStaking{
     }
 
     function unstakeTokens(uint256 amount) public{
-        require(amount <= stakingBalance[msg.sender], 'insufficient balance');
+        require(amount <= stakingBalance[msg.sender], 'unstakeTokens : insufficient balance');
         crowd.transfer(msg.sender, amount);
         stakingBalance[msg.sender] -= amount;
         _totalStaking -= amount;
