@@ -40,7 +40,6 @@ const config: HardhatUserConfig = {
     bscTestnet: {
       url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
       accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
-      hardfork: "byzantium"
 
       // network_id: 97,
       // confirmations: 0,
@@ -53,7 +52,8 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY || process.env.BSCSCANAPIKEY,
+    apiKey: process.env.ETHERSCAN_API_KEY ,
+    // apiKey: process.env.BSCSCANAPIKEY,
   },
 };
 
