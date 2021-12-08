@@ -8,73 +8,43 @@ import "./CROWDValidator.sol";
 
 contract IDOWallet is Ownable, CROWDValidator{
 
-    IERC20 ticket;
-    constructor(IERC20 _ticket){
-        ticket = _ticket;
-    }
-    //contract address, amount pair
-    mapping(address => uint256) private _deposits;
-
-    mapping(uint256 => bool) private _processed;
+    address token_reciever;
 
     //Don't accept ETH or BNB
     receive () payable external{
         revert();
     }
 
+    event Deposit(address indexed token_contract, uint256 indexed amount);
+    event Withdraw(address indexed token_contract, uint256 indexed amount, uint256 indexed id);
 
-    event Deposited(address indexed payee, uint256 weiAmount);
-
-    function depositsOf(address contract_address) public view returns (uint256) {
-        return _deposits[contract_address];
-    }
-
-    function depositForSale(address contract_address, uint256 amount) public{
-        checkValidator(contract_address);
-        //TODO: check contract address is erc20
-        IERC20 erc20 = IERC20(contract_address);
-        erc20.transferFrom(msg.sender, address(this), amount);
-        
-        _deposits[contract_address] += amount;
-        emit Deposited(contract_address, amount);
-    }
-
-    function claimIDO(address contract_address, uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
-        address _validator = checkValidator(contract_address);
-
-        IERC20 erc20 = IERC20(contract_address);
-
+    function save(address token_contract) public onlyOwner{
+        IERC20 erc20 = IERC20(token_contract);
         uint256 balance = erc20.balanceOf(address(this));
-        require(balance >= _deposits[contract_address]);
 
-        require(_deposits[contract_address] >= amount);
-
-        //TODO: check invest contract?
-
-        //verify signature
-        verify("claimIDO", id, msg.sender, amount, contract_address, expired_at, _validator, signature);
-
-        erc20.transfer(msg.sender, amount);
-    }
-
-    function save(address _addr) public onlyOwner{
-        IERC20 erc20 = IERC20(_addr);
-        uint256 balance = erc20.balanceOf(address(this));
-        require(balance > _deposits[_addr]);
-
-        erc20.transfer(owner(), balance - _deposits[_addr]);
+        erc20.transfer(token_reciever, balance);
     }
 
     //for ticket
-    function depositTicket(uint256 amount) public{
-        ticket.transferFrom(msg.sender, address(this), amount);
-        //TODO: ticket balance
+    function deposit(address token_contract, uint256 amount) public{
+        require(token_reciever != address(0), "deposit: not set token reciever.");
+        IERC20(token_contract).transferFrom(msg.sender, token_reciever, amount);
+        emit Deposit(token_contract, amount);
     }
 
-    function withdrawTicket(uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
-        verify("withdrawTicket", id, msg.sender, amount, address(this), expired_at, getValidator(address(this)), signature);
+    function withdraw(address token_contract, uint256 amount, uint256 id, uint256 expired_at, bytes memory signature) public{
+        require(token_reciever != address(0), "withdraw: not set token reciever.");
+        address _validator = checkValidator(token_contract);
+        verify("withdraw", id, msg.sender, amount, token_contract, expired_at, _validator, signature);
         
-        ticket.transfer(msg.sender, amount);
+        IERC20(token_contract).transferFrom(token_reciever, msg.sender, amount);
+        emit Withdraw(token_contract, amount, id);
     }
 
+    function setReciever(address _addr) public onlyOwner {
+        token_reciever = _addr;
+    }   
+    function getReciver()public view returns(address){
+        return token_reciever;
+    }
 }
