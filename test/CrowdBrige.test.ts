@@ -2,8 +2,6 @@
 import { ethers, waffle } from "hardhat";
 import { expect, assert } from "chai";
 
-import CROWDTokenArtifact from '../artifacts/contracts/CROWDToken.sol/CROWDToken.json';
-import CROWDBridgeArtifact from '../artifacts/contracts/CROWDBridge.sol/CROWDBridge.json';
 import { CROWDToken } from '../typechain/CROWDToken';
 import { CrowdBridge } from '../typechain/CrowdBridge';
 import { BigNumber } from "@ethersproject/bignumber";
@@ -11,8 +9,6 @@ import { hashMessage } from "@ethersproject/hash";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import { Wallet } from "@ethersproject/wallet";
-
-const { deployContract } = waffle;
 
 describe('CROWD, Bridge', () => {
 
@@ -47,21 +43,12 @@ describe('CROWD, Bridge', () => {
 
         if (skipTest) return ;
         [admin, test1] = provider.getWallets()
-        crowdToken = await deployContract(
-            admin,
-            CROWDTokenArtifact,
-            [
-                "CROWD.com", "CWD", 10000000
-            ]
-        ) as CROWDToken;
 
-        crowdBridge = await deployContract(
-            admin,
-            CROWDBridgeArtifact,
-            [
-                crowdToken.address
-            ]
-        ) as CrowdBridge;
+        let factory = await ethers.getContractFactory("CROWDToken");
+        crowdToken = await factory.deploy("CROWD.com", "CWD", 10000000);
+
+        let factory2 = await ethers.getContractFactory("CrowdBridge");
+        crowdBridge = await factory2.deploy();
     });
     it('token transfer test', async () => {
         if (skipTest) return ;

@@ -9,11 +9,6 @@ import "./ICROWDToken.sol";
 
 contract CrowdBridge is Ownable, CROWDValidator{    
 
-    uint network_type;
-    constructor(uint network){
-        network_type = network;
-    }
-
     mapping(address => address) _mapEthBsc;
 
     //Don't accept ETH or BNB

@@ -23,16 +23,9 @@ contract CROWDStaking is Ownable{
     function setToken(address token_contract) public onlyOwner{
         crowd = ICROWDToken(token_contract);
     }
-    function getToken() public view returns (address){
-        return address(crowd);
-    }
 
     function totalStaking() public view returns (uint256){
         return _totalStaking;
-    }
-
-    function getStaking(address addr) public view returns (uint256){
-        return stakingBalance[addr];
     }
 
     function stakeTokens(uint256 amount) public{
