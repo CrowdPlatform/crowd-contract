@@ -4,6 +4,12 @@ truffle에서 hardhat으로 변경.
 - typescript '잘'지원.
 - 컨트랙트 console.log가능
 - truffle의 migration기능 동작의 문제. 여러 컨트랙트를 관리하는데 있어서 불편함.
+
+
+
+> yarn verify 0xec3F0f773768e9Ec1fDa6c7C8954a71f9A3Eb6DB --network bscTestnet --contract contracts/CROWDToken.sol:CROWDToken "ticket.bnbt.com" "TICKET" "1000000000000000000000000000"
+
+
 ### Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.

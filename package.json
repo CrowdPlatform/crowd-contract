@@ -42,6 +42,7 @@
   "scripts": {
     "build": "yarn hardhat compile",
     "test": "yarn hardhat test",
+    "verify": "yarn hardhat verify",
     "testInvest": "yarn hardhat test test/CrowdInvest.test.ts",
     "ropstenBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.ropsten.ts --network ropsten",
     "bscTestBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.bsc.ts --network bscTestnet",

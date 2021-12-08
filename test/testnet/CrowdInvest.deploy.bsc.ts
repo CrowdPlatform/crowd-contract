@@ -67,11 +67,11 @@ async function main() {
     // await registWhiteList();
     // }
 
-    var id = 1;
+    var id = 2;
 
-    await createPool();
+    // await createPool();
 
-    await registWhiteList();
+    // await registWhiteList();
 
     //approve busd for invest contract
     for(var i = 1; i<accounts.length; ++i){
