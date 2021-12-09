@@ -53,10 +53,10 @@ describe('CROWD, Stacking, Ticket', () => {
                 await crowdToken.connect(test1).approve(crowdStaking.address, '115792089237316195423570985008687907853269984665640564039457584007913129639935');
             }
 
-            var already_staked = await crowdStaking.getStaking(test1.address);
+            var already_staked = await crowdStaking.stakingBalance(test1.address);
             await crowdStaking.connect(test1).stakeTokens(stake_amount);
 
-            var confirm_stake = await crowdStaking.getStaking(test1.address);
+            var confirm_stake = await crowdStaking.stakingBalance(test1.address);
             assert.equal(confirm_stake.eq(already_staked.add(stake_amount)), true);
 
             var total_stake = await crowdStaking.totalStaking();
@@ -65,13 +65,13 @@ describe('CROWD, Stacking, Ticket', () => {
         });
 
         it('unstaking test', async () => {
-            var stake_amount = await crowdStaking.getStaking(test1.address);
+            var stake_amount = await crowdStaking.stakingBalance(test1.address);
             console.log('stake amount : ' + stake_amount.valueOf());
 
             var unstake_amount = stake_amount.div(2);
             console.log('unstake amount:' + unstake_amount.toString());
             await crowdStaking.connect(test1).unstakeTokens(unstake_amount.toString());
-            var after_unstake = await crowdStaking.getStaking(test1.address);
+            var after_unstake = await crowdStaking.stakingBalance(test1.address);
             assert.equal(after_unstake.eq(stake_amount.sub(unstake_amount)), true);
 
             var total_stake = await crowdStaking.totalStaking();

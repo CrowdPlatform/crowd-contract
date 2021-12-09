@@ -35,8 +35,9 @@ async function main() {
         tokenAddress = ticketContract.address;
     }
     else if(network.name === 'ropsten'){
-        // idoWallet = await ethers.getContractAt("IDOWallet", '');
-        // tokenAddress = (await ethers.getContractAt("CROWDToken", '0x3646686CEFdB7FBCD9A3488F198f5834251548AB')).address;
+        idoWallet = await ethers.getContractAt("IDOWallet", '0x68399CBD04D5A90AE07a59963be536a0c5f846D0');
+        ticketContract = await ethers.getContractAt("CROWDToken", '0x2ba155d1d567d98458b335a51d25a24a3b0f23ec');//alp
+        tokenAddress = ticketContract.address;;
     }
     else {
         console.log(network);
