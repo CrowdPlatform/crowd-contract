@@ -33,7 +33,6 @@
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "solhint": "^3.3.6",
     "solidity-coverage": "^0.7.16",
-    "truffle": "5.4.6",
     "ts-generator": "^0.1.1",
     "ts-node": "^10.1.0",
     "typechain": "^5.1.2",
@@ -46,12 +45,10 @@
     "testInvest": "yarn hardhat test test/CrowdInvest.test.ts",
     "ropstenBridge": "yarn hardhat run scripts/CrowdBrige.deploy.ropsten.ts --network ropsten",
     "bscTestBridge": "yarn hardhat run scripts/CrowdBrige.deploy.bsc.ts --network bscTestnet",
-    "verifyBscInvest":"yarn hardhat verify 0x69e3C8B89bD520422b34499ed5879258437b65C4 --network bscTestnet"
-
+    "verifyBscInvest": "yarn hardhat verify 0x69e3C8B89bD520422b34499ed5879258437b65C4 --network bscTestnet"
   },
   "dependencies": {
     "builder": "^5.0.0",
-    "dotenv": "^10.0.0",
-    "truffle-hdwallet-provider": "^1.0.17"
+    "dotenv": "^10.0.0"
   }
 }

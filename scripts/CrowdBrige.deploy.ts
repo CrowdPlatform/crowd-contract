@@ -20,7 +20,7 @@ async function main() {
     console.log(testAccount.address);
 
     if (network.name === 'bnbt') {
-        crowdBridge = await ethers.getContractAt("CrowdBridge", '0xBb3f0d89b6DcC11630Edff82A455470Ecf676B02');
+        // crowdBridge = await ethers.getContractAt("CrowdBridge", '0xBb3f0d89b6DcC11630Edff82A455470Ecf676B02');
         crowdToken = await ethers.getContractAt("CROWDToken", '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');
     }
     else if (network.name === 'ropsten') {
@@ -74,11 +74,11 @@ async function main() {
 
 }
 
-async function getAccounts() {
-    accounts = await ethers.getSigners();
-    console.log(accounts.map(a=>a.address));
-}
+// async function getAccounts() {
+//     accounts = await ethers.getSigners();
+//     console.log(accounts.map(a=>a.address));
+// }
 
-getAccounts();
+// getAccounts();
 
-// main();
+main();
