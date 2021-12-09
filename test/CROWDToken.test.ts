@@ -5,8 +5,6 @@ import { CROWDToken } from '../typechain/CROWDToken';
 import { CROWDStaking } from '../typechain/CROWDStaking';
 import { BigNumber } from "@ethersproject/bignumber";
 
-const { deployContract } = waffle;
-
 describe('CROWD, Stacking, Ticket', () => {
     let crowdToken: CROWDToken;
     let crowdStaking: CROWDStaking;
