@@ -1,19 +1,10 @@
 
 import { ethers, waffle } from "hardhat";
-import { expect, assert } from "chai";
 
-import IDOWalletArtifact from '../../artifacts/contracts/IDOWallet.sol/IDOWallet.json';
-import { IDOWallet } from '../../typechain/IDOWallet';
-import { CROWDToken } from '../../typechain/CROWDToken';
+import { IDOWallet } from '../typechain/IDOWallet';
+import { CROWDToken } from '../typechain/CROWDToken';
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ContractError } from "../ContractError";
-import { Signer } from "@ethersproject/abstract-signer";
-import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { time } from "console";
-
-const { deployContract } = waffle;
 
 const decimal = BigNumber.from((10 ** 18).toString());
 let idoWallet: IDOWallet;

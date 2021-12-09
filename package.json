@@ -44,8 +44,8 @@
     "test": "yarn hardhat test",
     "verify": "yarn hardhat verify",
     "testInvest": "yarn hardhat test test/CrowdInvest.test.ts",
-    "ropstenBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.ropsten.ts --network ropsten",
-    "bscTestBridge": "yarn hardhat run test/testnet/CrowdBrige.deploy.bsc.ts --network bscTestnet",
+    "ropstenBridge": "yarn hardhat run scripts/CrowdBrige.deploy.ropsten.ts --network ropsten",
+    "bscTestBridge": "yarn hardhat run scripts/CrowdBrige.deploy.bsc.ts --network bscTestnet",
     "verifyBscInvest":"yarn hardhat verify 0x69e3C8B89bD520422b34499ed5879258437b65C4 --network bscTestnet"
 
   },

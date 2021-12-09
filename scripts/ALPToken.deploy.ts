@@ -2,7 +2,7 @@
 import { ethers, waffle } from "hardhat";
 import { expect, assert } from "chai";
 
-import { CROWDToken } from '../../typechain/CROWDToken';
+import { CROWDToken } from '../typechain/CROWDToken';
 import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 

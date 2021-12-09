@@ -2,17 +2,11 @@
 import { ethers, waffle } from "hardhat";
 import { expect, assert } from "chai";
 
-import CROWDInvestArtifact from '../../artifacts/contracts/CROWDInvest.sol/CROWDInvest.json';
-import { CROWDInvest } from '../../typechain/CROWDInvest';
-import { CROWDToken } from '../../typechain/CROWDToken';
+import { CROWDInvest } from '../typechain/CROWDInvest';
+import { CROWDToken } from '../typechain/CROWDToken';
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ContractError } from "../ContractError";
 import { Signer } from "@ethersproject/abstract-signer";
-import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-
-const { deployContract } = waffle;
 
 const decimal = BigNumber.from((10 ** 18).toString());
 let crowdInvest: CROWDInvest;
@@ -40,12 +34,8 @@ async function main() {
     }
 
     if (!crowdInvest) {
-        crowdInvest = await deployContract(
-            accounts[0],
-            CROWDInvestArtifact,
-            [
-            ]
-        ) as CROWDInvest;
+        const factory = await ethers.getContractFactory("CROWDInvest");
+        crowdInvest = await factory.deploy();
     }
     console.log(crowdInvest.address);
 
@@ -99,7 +89,7 @@ async function InvestPool(test: Signer, id: BigNumberish, amount: BigNumberish):
         // function investPool(uint256 invest_id, uint256 amount) public
         await (await crowdInvest.connect(test).investPool(id, amount, { gasLimit: '1000000'})).wait(1);
     } catch (error) {
-        console.log((error as ContractError));
+        console.log(error);
         res = false;
     } finally {
         return res;
