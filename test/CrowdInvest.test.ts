@@ -7,15 +7,9 @@ import CROWDInvestArtifact from '../artifacts/contracts/CROWDInvest.sol/CROWDInv
 import { CROWDToken } from '../typechain/CROWDToken';
 import { CROWDInvest } from '../typechain/CROWDInvest';
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import Web3 from 'Web3';
-import { hashMessage } from "@ethersproject/hash";
 import { ContractError } from "./ContractError";
-import { toASCII } from "punycode";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
-import { fail } from "assert";
-import exp from "constants";
-import { task } from "hardhat/config";
 
 const { deployContract } = waffle;
 
@@ -335,7 +329,7 @@ describe('CROWD Invest Pool', () => {
             var new_balance = await accounts[5].getBalance();
             // console.log(await (await accounts[5].getBalance()).toString());
             // console.log(await (await test1.getBalance()).toString());
-            expect(new_balance.sub(new_balance)).deep.equal(invest_amount);
+            expect(new_balance.sub(old_balance)).deep.equal(invest_amount);
             //bnb는 가스비때문에 정확한 값을 알수 없다.
             // expect(await test1.getBalance()).deep.equal(bnb_transfer.sub(invest_amount));
 
