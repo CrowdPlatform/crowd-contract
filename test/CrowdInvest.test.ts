@@ -318,9 +318,9 @@ describe('CROWD Invest Pool', () => {
             for (; idx < old_whiteList[0].length; idx++)
                 if (old_whiteList[0][idx] === test1.address) break;
 
-            // var old_balance = await accounts[5].getBalance();
-            console.log(await (await accounts[5].getBalance()).toString());
-            console.log(await (await test1.getBalance()).toString());
+            var old_balance = await accounts[5].getBalance();
+            // console.log(await (await accounts[5].getBalance()).toString());
+            // console.log(await (await test1.getBalance()).toString());
             await crowdInvest.connect(test1).investPool(id, invest_amount,{value:invest_amount});
 
             // await testInvestPool(true, test1, id, invest_amount);
@@ -332,10 +332,11 @@ describe('CROWD Invest Pool', () => {
 
             // console.log(invest_amount.toString())
 
-            // var new_balance = await accounts[5].getBalance();
-            console.log(await (await accounts[5].getBalance()).toString());
-            console.log(await (await test1.getBalance()).toString());
-            // expect(new_balance.sub(new_balance)).deep.equal(invest_amount);
+            var new_balance = await accounts[5].getBalance();
+            // console.log(await (await accounts[5].getBalance()).toString());
+            // console.log(await (await test1.getBalance()).toString());
+            expect(new_balance.sub(new_balance)).deep.equal(invest_amount);
+            //bnb는 가스비때문에 정확한 값을 알수 없다.
             // expect(await test1.getBalance()).deep.equal(bnb_transfer.sub(invest_amount));
 
             var new_whiteList = await crowdInvest.getWhiteList(id);

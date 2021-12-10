@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // import "./CROWDValidator.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "hardhat/console.sol";
-
 contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     // IERC20 _busd;
 
@@ -175,7 +173,6 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
         uint256 use_ticket = amount / 1e18 / uint256(pool.main_per_ticket);
         if(amount % (uint256(pool.main_per_ticket)*1e18) != 0)
             use_ticket++;
-        // console.log("use_ticket : %s", use_ticket);
 
         int256 idx = getUserIndex(invest_id, msg.sender);
         require(idx != -1 &&
