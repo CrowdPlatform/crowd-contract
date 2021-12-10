@@ -89,7 +89,7 @@ describe('CROWD, Wallet', () => {
 
         var balance = await crowdToken.balanceOf(tester.address);
 
-        assert.equal(balance, amount);
+        assert.deepEqual(balance, amount);
     });
 
     it('wallet ticket test', async () => {

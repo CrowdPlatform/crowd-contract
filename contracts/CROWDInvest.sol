@@ -109,7 +109,7 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             main_per_ticket != 0,
             "createPool: main_per_ticket is invalid."
         );
-        require(main_token != address(0), "createPool: main_token is invalid.");
+        // require(main_token != address(0), "createPool: main_token is invalid.");
         require(total_amount != 0, "createPool: amount is invalid.");
         require(
             ts_start_time < ts_finish_time,
@@ -153,7 +153,7 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
 
     // function investPool(uint256 invest_id, uint256 id, address token_address, uint256 amount, uint256 expired_at, bytes memory signature) public{
     // verify("investPool", id, msg.sender, amount, token_address, expired_at, getValidator(address(this)), signature);
-    function investPool(uint256 invest_id, uint256 amount) public {
+    function investPool(uint256 invest_id, uint256 amount) public payable{
         require(
             _investPool[invest_id].total_amount != 0,
             "investPool: not exists id."
@@ -183,9 +183,13 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
             "investPool: insufficient ticket"
         );
 
-        IERC20 erc20 = IERC20(pool.main_token);
-        erc20.transferFrom(msg.sender, token_reciever, amount);
-
+        if(pool.main_token == address(0)){
+            require(amount == msg.value, "investPool: invalid amount");
+            payable(token_reciever).transfer(amount);
+        }else{
+            IERC20 erc20 = IERC20(pool.main_token);
+            erc20.transferFrom(msg.sender, token_reciever, amount);
+        }
         pool.invested_amount += amount;
         _whiteListTickets[invest_id][uint256(idx)] -= use_ticket;
 

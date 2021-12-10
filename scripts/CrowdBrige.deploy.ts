@@ -46,10 +46,10 @@ async function main() {
     }
 
     if (network.name === 'bnbt') {
-        await crowdBridge.resigtryMapEthBsc(crowdToken.address, '0x3646686CEFdB7FBCD9A3488F198f5834251548AB');
+        await crowdBridge.registContractMap(crowdToken.address, '0x3646686CEFdB7FBCD9A3488F198f5834251548AB');
     }
     else if (network.name === 'ropsten') {
-        await crowdBridge.resigtryMapEthBsc(crowdToken.address, '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');
+        await crowdBridge.registContractMap(crowdToken.address, '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');
     }
     else {
     }
@@ -68,8 +68,8 @@ async function main() {
     // await crowdBridge.connect(testAccount).transferToNetwork(crowdToken.address, testAccount.address, '1000000000000000000', 'bsc');
     // await crowdBridge.transferToNetwork(crowdToken.address, accounts[0].address, '1000000000000000000', 'bsc');
 
-    // await this.bridge.resigtryMapEthBsc(this.crowd.address, '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');        
-    // // await this.bridge.resigtryMapEthBsc(this.busd.address, this.crowd.address);        
+    // await this.bridge.registContractMap(this.crowd.address, '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f');        
+    // // await this.bridge.registContractMap(this.busd.address, this.crowd.address);        
     // await this.bridge.setValidator(this.crowd.address, this.validator);
 
 }

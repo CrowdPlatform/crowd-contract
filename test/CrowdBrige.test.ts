@@ -68,7 +68,7 @@ describe('CROWD, Bridge', () => {
         var contract_address = crowdToken.address;
         let signer = admin;
 
-        await crowdBridge.resigtryMapEthBsc(contract_address, crowdToken.address);
+        await crowdBridge.registContractMap(contract_address, crowdToken.address);
 
 
         await crowdBridge.setValidator(contract_address, signer.address);

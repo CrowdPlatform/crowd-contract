@@ -10,20 +10,32 @@
 			"detail": "yarn hardhat compile"
 		},
 		{
-			"type": "npm",
-			"script": "test",
-			"group": "test",
-			"problemMatcher": [],
-			"label": "npm: test",
-			"detail": "yarn hardhat test"
+			"label": "runCurrenTest shell",
+			"type": "shell",
+			"command": "yarn hardhat test ${file}",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated"
+			}
 		},
 		{
+			"label": "deploy bscTestnet",
 			"type": "npm",
-			"script": "test - invest",
+			"script": "${file} --network bscTestnet",
 			"group": "test",
-			"problemMatcher": [],
-			"label": "npm: test",
-			"detail": "yarn testInvest"
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated"
+			},
+			"problemMatcher": []
 		},
 	]
 }

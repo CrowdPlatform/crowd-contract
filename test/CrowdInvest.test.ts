@@ -76,10 +76,12 @@ describe('CROWD Invest Pool', () => {
             } catch (error) {
                 failed = !failed;
 
-                // console.log((error as ContractError).reason);
-                // console.log((error as ContractError).code);
-                // console.log((error as ContractError).error);
-                // console.log((error as ContractError).tx);
+                if (failed === false) {
+                    // console.log((error as ContractError).reason);
+                    // console.log((error as ContractError).code);
+                    // console.log((error as ContractError).error);
+                    console.log((error as ContractError));
+                }
 
             } finally {
                 assert.equal(failed, true);
@@ -167,7 +169,7 @@ describe('CROWD Invest Pool', () => {
                 // function investPool(uint256 invest_id, uint256 amount) public
                 await crowdInvest.connect(test).investPool(id, amount);
             } catch (error) {
-                if(failed)
+                if (failed)
                     console.log((error as ContractError).error);
                 failed = !failed;
             } finally {
@@ -191,8 +193,6 @@ describe('CROWD Invest Pool', () => {
         delay(2000);
 
         it('invest pool', async () => {
-
-
             var id = 1;
             var invest_amount = BigNumber.from((1001 * 10 ** 16).toString());
 
@@ -208,7 +208,7 @@ describe('CROWD Invest Pool', () => {
 
             await testInvestPool(false, test1, id, poolInfo.total_amount.add(1));
 
-            await testInvestPool(false, test1, id+1, invest_amount);
+            await testInvestPool(false, test1, id + 1, invest_amount);
 
             await testInvestPool(false, test1, id, old_whiteList[1][idx].mul(main_per_ticket).mul(decimal).add(1));
 
@@ -228,5 +228,119 @@ describe('CROWD Invest Pool', () => {
             expect(old_whiteList[1][idx].toNumber() - new_whiteList[1][idx].toNumber()).eq(use_ticket);
 
         });
+
+        it('create pool  test bnb', async () => {
+            // function createPool(
+            //     uint256 id,
+            //     uint256 main_per_ticket,
+            //     address main_token,
+            //     uint256 total_amount,
+            //     uint256 ts_start_time,
+            //     uint256 ts_finish_time,
+            //     uint256 state        
+            var id = 2;
+            var main_per_ticket = 10;
+            var main_token = "0x0000000000000000000000000000000000000000";
+            var total_amount = decimal.mul(100);
+            var ts_start_time = Math.floor(Date.now() / 1000) + 5;
+            var ts_finish_time = ts_start_time + 1000;
+            var state = 0;
+
+            await testCreatePool(true, id, main_per_ticket, main_token, total_amount, ts_start_time, ts_finish_time, state);
+
+            var poolInfo = await crowdInvest.getPool(id);
+            assert.equal(poolInfo.main_per_ticket, main_per_ticket);
+            assert.equal(poolInfo.main_token, main_token);
+            assert.deepEqual(poolInfo.total_amount, total_amount);
+            assert.equal(poolInfo.ts_start_time.toNumber(), ts_start_time);
+            assert.equal(poolInfo.ts_finish_time.toNumber(), ts_finish_time);
+            assert.equal(poolInfo.state.toNumber(), state);
+            // console.log(poolInfo);
+        });
+        it('regist white list 2', async () => {
+            // function registWhiteList(
+            //     uint256 id,
+            //     address[] memory users,
+            //     uint256[] memory amounts
+            var id = 2;
+            var users: string[] = [];
+            var amounts: BigNumber[] = [];
+            users.push(test1.address);
+
+            var failed = false;
+            try {
+                await crowdInvest.registWhiteList(id, users, amounts);
+            } catch (error) {
+                // console.log((error as ContractError).error);
+                failed = true;
+                // console.log((error as ContractError).tx);
+            } finally {
+                assert.equal(failed, true);
+            }
+
+            amounts.push(BigNumber.from(100));
+            await crowdInvest.registWhiteList(id, users, amounts);
+
+            var whiteList = await crowdInvest.getWhiteList(id);
+            // console.log(whiteList);
+            assert.deepEqual(whiteList[0], users);
+            assert.deepEqual(whiteList[1], amounts);
+
+        });
+
+        it('invest pool fail before start', async () => {
+            // var approve_amount = decimal.mul(5000);
+
+            await crowdInvest.setReciever(receiver);
+            // await admin.sendTransaction({
+            //     to: test1.address,
+            //     value: bnb_transfer
+            // });
+            // await busdToken.transfer(test1.address, busd_transfer);
+            // await busdToken.connect(test1).approve(crowdInvest.address, approve_amount);
+
+            expect(await crowdInvest.getReciver()).equal(receiver);
+
+            // await testInvestPool(false, test1, 1, decimal);
+        });
+        delay(2000);
+
+        it('invest pool', async () => {
+            var id = 2;
+            var invest_amount = BigNumber.from((100 * 10 ** 16).toString());
+
+
+            var poolInfo = await crowdInvest.getPool(id);
+            var main_per_ticket = poolInfo.main_per_ticket;
+
+            var old_whiteList = await crowdInvest.getWhiteList(id);
+            var idx = 0;
+            for (; idx < old_whiteList[0].length; idx++)
+                if (old_whiteList[0][idx] === test1.address) break;
+
+            // var old_balance = await accounts[5].getBalance();
+            console.log(await (await accounts[5].getBalance()).toString());
+            console.log(await (await test1.getBalance()).toString());
+            await crowdInvest.connect(test1).investPool(id, invest_amount,{value:invest_amount});
+
+            // await testInvestPool(true, test1, id, invest_amount);
+
+            var use_ticket = invest_amount.div(decimal).div(main_per_ticket).toNumber();
+            // console.log(invest_amount.toString())
+            if (invest_amount.mod(decimal.mul(main_per_ticket)).eq(0) == false)
+                use_ticket++;
+
+            // console.log(invest_amount.toString())
+
+            // var new_balance = await accounts[5].getBalance();
+            console.log(await (await accounts[5].getBalance()).toString());
+            console.log(await (await test1.getBalance()).toString());
+            // expect(new_balance.sub(new_balance)).deep.equal(invest_amount);
+            // expect(await test1.getBalance()).deep.equal(bnb_transfer.sub(invest_amount));
+
+            var new_whiteList = await crowdInvest.getWhiteList(id);
+            expect(old_whiteList[1][idx].toNumber() - new_whiteList[1][idx].toNumber()).eq(use_ticket);
+
+        });        
     });
 });
