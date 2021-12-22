@@ -1,17 +1,15 @@
-
 import { ethers, waffle } from "hardhat";
 import { expect, assert } from "chai";
 
-import { CROWDToken } from '../typechain/CROWDToken';
-import { CrowdBridge } from '../typechain/CrowdBridge';
+import { CROWDToken } from "../typechain/CROWDToken";
+import { CrowdBridge } from "../typechain/CrowdBridge";
 import { BigNumber } from "@ethersproject/bignumber";
 import { hashMessage } from "@ethersproject/hash";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import { Wallet } from "@ethersproject/wallet";
 
-describe('CROWD, Bridge', () => {
-
+describe("CROWD, Bridge", () => {
     let crowdToken: CROWDToken;
     let crowdBridge: CrowdBridge;
 
@@ -23,10 +21,9 @@ describe('CROWD, Bridge', () => {
     let test1: Wallet;
     const decimal = BigNumber.from((10 ** 18).toString());
 
-    
     function delay(interval: number) {
-        return it('delay', done => {
-            setTimeout(() => done(), interval)
+        return it("delay", (done) => {
+            setTimeout(() => done(), interval);
         }).timeout(interval + 100);
     }
 
@@ -34,15 +31,15 @@ describe('CROWD, Bridge', () => {
         try {
             var network = await provider.getNetwork();
             // console.log(network);
-            skipTest = network.name !== 'unknown';
+            skipTest = network.name !== "unknown";
         } catch (error) {
-            console.log('error : ' + error);            
-        } finally{
-            console.log('skipTest : ' + skipTest)
+            console.log("error : " + error);
+        } finally {
+            console.log("skipTest : " + skipTest);
         }
 
-        if (skipTest) return ;
-        [admin, test1] = provider.getWallets()
+        if (skipTest) return;
+        [admin, test1] = provider.getWallets();
 
         let factory = await ethers.getContractFactory("CROWDToken");
         crowdToken = await factory.deploy("CROWD.com", "CWD", 10000000);
@@ -50,8 +47,8 @@ describe('CROWD, Bridge', () => {
         let factory2 = await ethers.getContractFactory("CrowdBridge");
         crowdBridge = await factory2.deploy();
     });
-    it('token transfer test', async () => {
-        if (skipTest) return ;
+    it("token transfer test", async () => {
+        if (skipTest) return;
         var balance = await crowdToken.balanceOf(test1.address);
 
         let transfer_amount = decimal.mul(2);
@@ -62,41 +59,40 @@ describe('CROWD, Bridge', () => {
 
         assert.equal(t_balance.sub(transfer_amount).eq(0), true);
     });
-    it('token transfer to network', async () => {
-        if (skipTest) return ;
+    it("token transfer to network", async () => {
+        if (skipTest) return;
 
         var contract_address = crowdToken.address;
         let signer = admin;
 
-        await crowdBridge.registContractMap(contract_address, crowdToken.address);
-
+        await crowdBridge.registContrac(contract_address);
 
         await crowdBridge.setValidator(contract_address, signer.address);
 
         let allowance = await crowdToken.allowance(test1.address, crowdBridge.address);
         if (allowance.valueOf() == 0) {
             // console.log('approve unlimited');
-            await crowdToken.connect(test1).approve(crowdBridge.address, '115792089237316195423570985008687907853269984665640564039457584007913129639935');
+            await crowdToken.connect(test1).approve(crowdBridge.address, "115792089237316195423570985008687907853269984665640564039457584007913129639935");
         }
 
         var balance = await crowdToken.balanceOf(test1.address);
         // console.log('account1 balance : ' + balance.valueOf().toString());
 
-
         let transferToAmount = decimal;
         //method id : 0x81b204c4
-        let transferTo = await crowdBridge.connect(test1).transferToNetwork(crowdToken.address, test1.address, transferToAmount.toString(), 'ethereum');
+        let transferTo = await crowdBridge.connect(test1).transferToNetwork(crowdToken.address, test1.address, transferToAmount.toString(), "ethereum");
         // console.log(transferTo.hash);
 
         balance = await crowdToken.balanceOf(crowdBridge.address);
         // console.log('bridge balance : ' + balance.toString());
 
-
         let expired_at = 0;
         let id = 1;
 
-        var encoded_packed = ethers.utils.solidityPack(['string', 'uint256', 'address', 'uint256', 'address', 'uint256']
-            , ["transferFromNetwork", 1, test1.address, transferToAmount, contract_address, expired_at]);
+        var encoded_packed = ethers.utils.solidityPack(
+            ["string", "uint256", "address", "uint256", "address", "uint256"],
+            ["transferFromNetwork", 1, test1.address, transferToAmount, contract_address, expired_at]
+        );
         // console.log(encoded_packed);
         var msg_hashed = ethers.utils.keccak256(encoded_packed);
 
@@ -107,10 +103,8 @@ describe('CROWD, Bridge', () => {
         // console.log(msgBytes.length);
         // console.log(msgBytes);
 
-
         var sig = await signer.signMessage(msgBytes);
         // console.log(sig);
-
 
         var recover_signer = ethers.utils.recoverAddress(hashMessage(msgBytes), sig);
         assert.equal(recover_signer, signer.address);
@@ -148,7 +142,6 @@ describe('CROWD, Bridge', () => {
             assert.equal(failed, true);
         }
 
-
         //Fail Test for invalid signer
         failed = false;
         try {
@@ -159,7 +152,5 @@ describe('CROWD, Bridge', () => {
         } finally {
             assert.equal(failed, true);
         }
-
     });
-
 });

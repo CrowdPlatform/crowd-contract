@@ -42,7 +42,7 @@ library ECDSA {
                 s := mload(add(signature, 0x40))
                 v := byte(0, mload(add(signature, 0x60)))
             }
-            
+
             if (v < 27) {
                 v += 27;
             }
@@ -101,10 +101,7 @@ library ECDSA {
         // with 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141 - s1 and flip v from 27 to 28 or
         // vice versa. If your library also generates signatures with 0/1 for v instead 27/28, add 27 to v to accept
         // these malleable signatures as well.
-        require(
-            uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0,
-            "ECDSA: invalid signature 's' value"
-        );
+        require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "ECDSA: invalid signature 's' value");
         require(v == 27 || v == 28, "ECDSA: invalid signature 'v' value");
 
         // If the signature is valid (and not malleable), return the signer address
@@ -141,25 +138,32 @@ library ECDSA {
         return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
     }
 
-    function getHash(string memory message, uint256 id, address addr, uint256 amount, address addr2, uint256 expired_at) internal pure returns (bytes32){
-        return  keccak256(
-             abi.encodePacked(
-                message,
-                id, 
-                addr,
-                amount, 
-                addr2,
-                expired_at
-        ));
-    }    
+    function getHash(
+        string memory message,
+        uint256 id,
+        address addr,
+        uint256 amount,
+        address addr2,
+        uint256 expired_at
+    ) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(message, id, addr, amount, addr2, expired_at));
+    }
 
-    function verify(string memory message, uint256 id, address addr, uint256 amount, address addr2, uint256 expired_at, address signer, bytes memory signature) internal view{
+    function verify(
+        string memory message,
+        uint256 id,
+        address addr,
+        uint256 amount,
+        address addr2,
+        uint256 expired_at,
+        address signer,
+        bytes memory signature
+    ) internal view {
         //verify signature
         bytes32 _hash = toEthSignedMessageHash(getHash(message, id, addr, amount, addr2, expired_at));
         address recover_signer = recover(_hash, signature);
         require(signer == recover_signer, "invalid signer");
 
-        if(expired_at > 0)
-            require(block.timestamp <= expired_at, "expired signature");
+        if (expired_at > 0) require(block.timestamp <= expired_at, "expired signature");
     }
 }

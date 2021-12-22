@@ -1,7 +1,6 @@
-
 import { ethers, waffle } from "hardhat";
 
-import { CROWDToken } from '../typechain/CROWDToken';
+import { CROWDToken } from "../typechain/CROWDToken";
 import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
@@ -11,32 +10,31 @@ var accounts: SignerWithAddress[];
 
 async function main() {
     accounts = await ethers.getSigners();
-    console.log(accounts.map(e=>e.address));
     var network = await ethers.provider.getNetwork();
 
-    var testAccount = accounts[1];
-    console.log(testAccount.address);
+    var name = "CROWD TICKET";
+    var symbol = "TICKET";
+    var amount = "0";
 
-    if (network.name === 'bnbt') {
-        crowdToken = await ethers.getContractAt("CROWDToken", '0xec3F0f773768e9Ec1fDa6c7C8954a71f9A3Eb6DB');
-    }
-    // else if (network.name === 'ropsten') {
-    //     // crowdToken = await ethers.getContractAt("CROWDToken", '');
-    // }
-    else {
-        console.log(network);
-        return;
+    switch (network.chainId) {
+        case 56: //bsc
+            amount = "1000000000";
+            break;
+        case 97: //bsc testnet
+            name = name + ".bnbt";
+            break;
+        case 3: //ropsten
+        case 1: //ethereum
+        default:
+            console.log(network);
+            return;
     }
 
     if (!crowdToken) {
         const factory = await ethers.getContractFactory("CROWDToken");
-        crowdToken = await factory.deploy(
-            "ticket." + network.name + ".com",
-            "TICKET",
-            "1000000000");
+        crowdToken = await factory.deploy(name, symbol, amount);
     }
     console.log(crowdToken.address);
 }
-
 
 main();

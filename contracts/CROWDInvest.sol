@@ -10,14 +10,14 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     // IERC20 _busd;
 
-    address token_reciever;
+    address public token_reciever;
 
-    mapping(uint256 => IDOPool) _investPool;
+    mapping(uint256 => IDOPool) private _investPool;
     // mapping(uint256 => address[]) _investPoolUsers;
     // mapping(address => mapping(uint256 => uint256)) _users;
     // mapping(uint256 => mapping(address => uint256)) _whiteList;
-    mapping(uint256 => address[]) _whiteListUsers;
-    mapping(uint256 => uint256[]) _whiteListTickets;
+    mapping(uint256 => address[]) private _whiteListUsers;
+    mapping(uint256 => uint256[]) private _whiteListTickets;
 
     event InvestPool(
         uint256 indexed invest_id,
@@ -26,14 +26,9 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
         uint256 use_ticket
     );
 
-    constructor() {
-        // _busd = IERC20(address(0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56));//bsc mainnet
-        // _busd = IERC20(address(0x86dDC7e76bD30fEA987380f8C5C2bE4a5B43A42C));//bsc testnet
-    }
-
     //Don"t accept ETH or BNB
     receive() external payable {
-        revert();
+        revert("Don't accept ETH or BNB");
     }
 
     struct IDOPool {
@@ -58,11 +53,11 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     ) public onlyOwner {
         require(
             _investPool[id].total_amount != 0,
-            "registWhiteList : not exists id."
+            "not exists id."
         );
         require(
             users.length == amounts.length,
-            "registWhiteList : invalid array counts."
+            "invalid array counts."
         );
 
         // require(
@@ -142,15 +137,10 @@ contract CROWDInvest is Context, Ownable{//}, CROWDValidator {
     function removePool(uint256 id) public onlyOwner {
         require(_investPool[id].total_amount != 0x0, "not exists id.");
         delete _investPool[id];
-        // delete _investPoolUsers[id];
         delete _whiteListTickets[id];
         delete _whiteListUsers[id];
     }
 
-    function finishPool(uint256 id) public onlyOwner {}
-
-    // function investPool(uint256 invest_id, uint256 id, address token_address, uint256 amount, uint256 expired_at, bytes memory signature) public{
-    // verify("investPool", id, msg.sender, amount, token_address, expired_at, getValidator(address(this)), signature);
     function investPool(uint256 invest_id, uint256 amount) public payable{
         require(
             _investPool[invest_id].total_amount != 0,
