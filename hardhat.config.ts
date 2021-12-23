@@ -42,11 +42,11 @@ const config: HardhatUserConfig = {
 
         bsc: {
             url: `https://bsc-dataseed.binance.org/`,
-            accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
+            accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
         },
         eth: {
             url: process.env.ETH_URL || "",
-            accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
+            accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
         },
     },
     gasReporter: {
@@ -54,8 +54,8 @@ const config: HardhatUserConfig = {
         currency: "USD",
     },
     etherscan: {
-        // apiKey: process.env.ETHERSCAN_API_KEY ,
-        apiKey: process.env.BSCSCANAPIKEY,
+        apiKey: process.env.ETHERSCAN_API_KEY,
+        // apiKey: process.env.BSCSCANAPIKEY,
     },
 };
 

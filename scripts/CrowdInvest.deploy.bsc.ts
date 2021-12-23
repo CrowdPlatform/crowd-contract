@@ -17,25 +17,34 @@ async function main() {
     var network = await ethers.provider.getNetwork();
     // console.log(network);
 
-    console.log(accounts[0].address);
+    switch (network.chainId) {
+        case 97: //bsc testnet
+            break;
+        case 56: //bsc
+            break;
+        case 1: //ethereum
+        case 3: //ropsten
+        default:
+            console.log(network);
+            return;
+    }
 
-    var recieverAddress: string | null = null;
+    var recieverAddress = process.env.RECIEVER || "";
 
-    if (recieverAddress === null) {
-        console.log("reciverAddress is not set");
+    if (recieverAddress.length === 0) {
+        console.error("reciverAddress is not set");
         return;
     }
 
-    if (network.name === "bnbt") {
-        // crowdInvest = await ethers.getContractAt("CROWDInvest",'0x842BA0C6b7eaE7559cbA867D1EFc771df457866C');
-        // crowdInvest = await ethers.getContractAt("CROWDInvest", '0xF59f70Ae2BD0FF3ED2DeF771D9464781922fe382');
-        // crowdInvest = await ethers.getContractAt("CROWDInvest", '0x69e3C8B89bD520422b34499ed5879258437b65C4');
-
-        busdToken = await ethers.getContractAt("CROWDToken", "0x86dDC7e76bD30fEA987380f8C5C2bE4a5B43A42C");
-    } else {
-        console.log(network);
-        return;
-    }
+    // if (network.name === "bnbt") {
+    //     // crowdInvest = await ethers.getContractAt("CROWDInvest",'0x842BA0C6b7eaE7559cbA867D1EFc771df457866C');
+    //     // crowdInvest = await ethers.getContractAt("CROWDInvest", '0xF59f70Ae2BD0FF3ED2DeF771D9464781922fe382');
+    //     // crowdInvest = await ethers.getContractAt("CROWDInvest", '0x69e3C8B89bD520422b34499ed5879258437b65C4');
+    //     // busdToken = await ethers.getContractAt("CROWDToken", "0x86dDC7e76bD30fEA987380f8C5C2bE4a5B43A42C");
+    // } else {
+    //     console.log(network);
+    //     return;
+    // }
 
     if (!crowdInvest) {
         const factory = await ethers.getContractFactory("CROWDInvest");
@@ -47,7 +56,7 @@ async function main() {
     if (receiver !== recieverAddress) {
         await (await crowdInvest.setReciever(recieverAddress)).wait(1);
         var receiver = await crowdInvest.getReciver();
-        console.log(receiver);
+        console.log("receiver is setted");
     }
 
     // await test(2);

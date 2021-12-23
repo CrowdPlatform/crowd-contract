@@ -18,6 +18,7 @@ contract IDOWallet is Ownable, CROWDValidator {
     event Withdraw(address indexed token_contract, uint256 indexed amount, uint256 indexed id);
 
     function save(address token_contract) public onlyOwner {
+        require(token_reciever != address(0), "token reciever is not set.");
         IERC20 erc20 = IERC20(token_contract);
         uint256 balance = erc20.balanceOf(address(this));
 
@@ -26,7 +27,7 @@ contract IDOWallet is Ownable, CROWDValidator {
 
     //for ticket
     function deposit(address token_contract, uint256 amount) public {
-        require(token_reciever != address(0), "deposit: not set token reciever.");
+        require(token_reciever != address(0), "token reciever is not set.");
         IERC20(token_contract).transferFrom(msg.sender, token_reciever, amount);
         emit Deposit(token_contract, amount);
     }
@@ -38,7 +39,7 @@ contract IDOWallet is Ownable, CROWDValidator {
         uint256 expired_at,
         bytes memory signature
     ) public {
-        require(token_reciever != address(0), "withdraw: not set token reciever.");
+        require(token_reciever != address(0), "token reciever is not set.");
         address _validator = checkValidator(token_contract);
         verify("withdraw", id, msg.sender, amount, token_contract, expired_at, _validator, signature);
 

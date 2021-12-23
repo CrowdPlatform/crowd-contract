@@ -15,32 +15,30 @@ var accounts: SignerWithAddress[];
 
 async function main() {
     accounts = await ethers.getSigners();
-    console.log(accounts.map((e) => e.address));
     var network = await ethers.provider.getNetwork();
 
-    var crowdTokenAddress: string | undefined;
+    var crowdTokenAddress: string;
 
-    if (network.name === "bnbt") {
-        // crowdTokenAddress = '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f';
-        crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT;
-    } else if (network.name === "ropsten") {
-        // crowdTokenAddress = '0x3646686CEFdB7FBCD9A3488F198f5834251548AB';
-        crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ROPSTEN;
-    } else {
-        console.log(network);
-        return;
+    switch (network.chainId) {
+        case 1: //ethereum
+            crowdTokenAddress = "";
+            break;
+        case 56: //bsc
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
+            break;
+        case 3: //ropsten
+            crowdTokenAddress = "";
+            break;
+        case 97: //bsc testnet
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT || "";
+            break;
+        default:
+            console.log(network);
+            return;
     }
 
-    if (crowdTokenAddress?.length === 0) {
+    if (crowdTokenAddress.length === 0) {
         console.log("crowdToken address is not setted.");
-        return;
-    }
-
-    if (network.name === "bnbt") {
-        crowdStaking = await ethers.getContractAt("CROWDStaking", "0xc0688BCD741a30E43C50e8B2D55534c3c3aE5D98");
-        crowdToken = await ethers.getContractAt("CROWDToken", "0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f");
-    } else {
-        console.log(network);
         return;
     }
 
@@ -48,9 +46,9 @@ async function main() {
         const factory = await ethers.getContractFactory("CROWDStaking");
         crowdStaking = await factory.deploy();
     }
-    console.log(crowdToken.address);
+    console.log(crowdStaking.address);
 
-    await crowdStaking.setToken(crowdToken.address);
+    await crowdStaking.setToken(crowdTokenAddress);
 }
 
 main();

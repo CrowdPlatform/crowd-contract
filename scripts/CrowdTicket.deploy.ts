@@ -12,8 +12,8 @@ async function main() {
     accounts = await ethers.getSigners();
     var network = await ethers.provider.getNetwork();
 
-    var name = "CROWD TICKET";
-    var symbol = "TICKET";
+    var name = "Ticket Token";
+    var symbol = "ticket";
     var amount = "0";
 
     switch (network.chainId) {
@@ -22,6 +22,7 @@ async function main() {
             break;
         case 97: //bsc testnet
             name = name + ".bnbt";
+            amount = "1000000000";
             break;
         case 3: //ropsten
         case 1: //ethereum

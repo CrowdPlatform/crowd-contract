@@ -15,32 +15,38 @@ async function main() {
     accounts = await ethers.getSigners();
     var network = await ethers.provider.getNetwork();
 
-    var testAccount = accounts[1];
-    console.log(testAccount.address);
+    var crowdTokenAddress: string;
+    var validatorAddress = process.env.VALIDATOR || "";
 
-    var crowdTokenAddress = null;
-
-    if (network.name === "bnbt") {
-        // crowdTokenAddress = '0x7011A750e85DfCDd7a5f334897E7Ea9cFe40Ed5f';
-    } else if (network.name === "ropsten") {
-        // crowdTokenAddress = '0x3646686CEFdB7FBCD9A3488F198f5834251548AB';
-    } else {
-        console.log(network);
+    if (validatorAddress.length === 0) {
+        console.error("validator address is not set");
         return;
     }
 
-    if (crowdTokenAddress === null) {
+    switch (network.chainId) {
+        case 1: //ethereum
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ETH || "";
+            break;
+        case 56: //bsc
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
+            break;
+        case 3: //ropsten
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ROPSTEN || "";
+            break;
+        case 97: //bsc testnet
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT || "";
+            break;
+        default:
+            console.log(network);
+            return;
+    }
+
+    if (crowdTokenAddress.length === 0) {
         console.log("crowdToken address is not setted.");
         return;
     }
 
     crowdToken = await ethers.getContractAt("CROWDToken", crowdTokenAddress);
-
-    if (network.name === "bnbt") {
-        // crowdBridge = await ethers.getContractAt("CrowdBridge", '0xBb3f0d89b6DcC11630Edff82A455470Ecf676B02');
-    } else if (network.name === "ropsten") {
-        // crowdBridge = await ethers.getContractAt("CrowdBridge", '0xD7EC11f170f75c77aE50BDA26B55892f0bd21561');
-    }
 
     if (!crowdBridge) {
         const factory = await ethers.getContractFactory("CrowdBridge");
@@ -57,9 +63,9 @@ async function main() {
     await (await crowdBridge.registContrac(crowdToken.address)).wait(1);
 
     var validator = await crowdBridge.getValidator(crowdToken.address);
-    if (validator !== "0xBBCaE96A030979529AE522064c893e15E4425054") {
+    if (validator !== validatorAddress) {
         console.log("validator set");
-        await (await crowdBridge.setValidator(crowdToken.address, "0xBBCaE96A030979529AE522064c893e15E4425054")).wait(1);
+        await (await crowdBridge.setValidator(crowdToken.address, validatorAddress)).wait(1);
     }
 
     // await crowdBridge.connect(testAccount).transferFromNetwork(crowdToken.address, '10110000000000000004', 'eth', '0x03684f35ddfe309f448cc74605616dbb3121d9d84898a193979e4e4e1c234ba0', '4000000000000000000', 0, '0x102510f54ee0916a8bd8f511a785e2b3d84fff798aeb510125608488c939909d567f5773028e4ca44a2273ee43bf558020c0a4b14ca0a816b436cce0de6370031c');

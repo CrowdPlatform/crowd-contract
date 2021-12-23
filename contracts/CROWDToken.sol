@@ -15,6 +15,6 @@ contract CROWDToken is ICROWDToken {
 
     //Don't accept ETH or BNB
     receive() external payable {
-        revert();
+        revert("Don't accept ETH or BNB");
     }
 }

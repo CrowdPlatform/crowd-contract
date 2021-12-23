@@ -16,7 +16,6 @@ var accounts: SignerWithAddress[];
 
 async function main() {
     accounts = await ethers.getSigners();
-    console.log(accounts);
     var network = await ethers.provider.getNetwork();
 
     var name = "CROWD";
@@ -31,6 +30,7 @@ async function main() {
             amount = "0";
             break;
         case 3: //ropsten
+            amount = "2500000000";
             name = name + ".ropsten";
             break;
         case 97: //bsc testnet
