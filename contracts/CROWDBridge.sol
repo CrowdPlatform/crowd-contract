@@ -31,7 +31,8 @@ contract CrowdBridge is Ownable, CROWDValidator {
     ) public {
         require(registContract[contract_address], "not registed contract");
 
-        ICROWDToken(contract_address).burnFrom(msg.sender, amount);
+        // ICROWDToken(contract_address).burnFrom(msg.sender, amount);
+        ICROWDToken(contract_address).transferFrom(msg.sender, address(this), amount);
 
         emit LogTransferToNetwork(to_account, amount, to_network);
     }
@@ -50,7 +51,8 @@ contract CrowdBridge is Ownable, CROWDValidator {
         //verify signature
         verify("transferFromNetwork", id, msg.sender, amount, contract_address, expired_at, getValidator(contract_address), signature);
 
-        ICROWDToken(contract_address).mint(msg.sender, amount);
+        // ICROWDToken(contract_address).mint(msg.sender, amount);
+        ICROWDToken(contract_address).transfer(msg.sender, amount);
 
         emit LogTransferFromNetwork(from_network, txhash, msg.sender, amount);
     }
