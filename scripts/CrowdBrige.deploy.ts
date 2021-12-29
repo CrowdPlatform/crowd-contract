@@ -3,12 +3,13 @@ import { expect, assert } from "chai";
 
 import { CrowdBridge } from "../typechain/CrowdBridge";
 import { CROWDToken } from "../typechain/CROWDToken";
+import { CROWDTokenBSC } from "../typechain/CROWDTokenBSC";
 import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 const decimal = BigNumber.from((10 ** 18).toString());
 let crowdBridge: CrowdBridge;
-let crowdToken: CROWDToken;
+let crowdToken: CROWDToken | CROWDTokenBSC;
 var accounts: SignerWithAddress[];
 
 async function main() {
@@ -16,6 +17,7 @@ async function main() {
     var network = await ethers.provider.getNetwork();
 
     var crowdTokenAddress: string;
+    var crowdBridgeAddress: string;
     var validatorAddress = process.env.VALIDATOR || "";
 
     if (validatorAddress.length === 0) {
@@ -23,18 +25,26 @@ async function main() {
         return;
     }
 
+    let contractName = "CROWDToken";
+
     switch (network.chainId) {
         case 1: //ethereum
             crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ETH || "";
-            break;
-        case 56: //bsc
-            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
+            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_ETH || "";
             break;
         case 3: //ropsten
             crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ROPSTEN || "";
+            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_ROPSTEN || "";
+            break;
+        case 56: //bsc
+            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
+            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_BNB || "";
+            contractName = "CROWDTokenBSC";
             break;
         case 97: //bsc testnet
             crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT || "";
+            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_BNBT || "";
+            contractName = "CROWDTokenBSC";
             break;
         default:
             console.log(network);
@@ -46,7 +56,12 @@ async function main() {
         return;
     }
 
-    crowdToken = await ethers.getContractAt("CROWDToken", crowdTokenAddress);
+    if (contractName === "CROWDToken") crowdToken = await ethers.getContractAt("CROWDToken", crowdTokenAddress);
+    else crowdToken = await ethers.getContractAt("CROWDTokenBSC", crowdTokenAddress);
+
+    if (crowdBridgeAddress.length > 0) {
+        crowdBridge = await ethers.getContractAt("CrowdBridge", crowdBridgeAddress);
+    }
 
     if (!crowdBridge) {
         const factory = await ethers.getContractFactory("CrowdBridge");

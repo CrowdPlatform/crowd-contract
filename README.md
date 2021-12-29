@@ -1,14 +1,14 @@
 ## 테스트 프레임워크
 
 truffle에서 hardhat으로 변경.
-- typescript '잘'지원.
-- 컨트랙트 console.log가능
-- truffle의 migration기능 동작의 문제. 여러 컨트랙트를 관리하는데 있어서 불편함.
 
+-   typescript '잘'지원.
+-   컨트랙트 console.log가능
+-   truffle의 migration기능 동작의 문제. 여러 컨트랙트를 관리하는데 있어서 불편함.
 
+> yarn hardhat verify 0xec3F0f773768e9Ec1fDa6c7C8954a71f9A3Eb6DB --network bscTestnet --contract contracts/CROWDToken.sol:CROWDToken "ticket.bnbt.com" "TICKET" "1000000000000000000000000000"
 
-> yarn verify 0xec3F0f773768e9Ec1fDa6c7C8954a71f9A3Eb6DB --network bscTestnet --contract contracts/CROWDToken.sol:CROWDToken "ticket.bnbt.com" "TICKET" "1000000000000000000000000000"
-
+> yarn hardhat verify 0xD2644a9D3E662b8907f00d88945a8a3a22B718de --network bscTestnet --contract contracts/CROWDTokenBSC.sol:CROWDTokenBSC CROWD.bnbt CWD 0 2500000000
 
 ### Advanced Sample Hardhat Project
 

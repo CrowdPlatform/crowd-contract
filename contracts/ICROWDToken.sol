@@ -65,6 +65,16 @@ contract HasMinters is Ownable {
 }
 
 abstract contract ICROWDToken is ERC20, Pausable, Ownable, HasMinters {
+    uint256 private _maxSupply;
+
+    function setMaxSupply(uint256 amount) internal onlyOwner {
+        _maxSupply = amount;
+    }
+
+    function maxSupply() public view returns (uint256) {
+        return _maxSupply;
+    }
+
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
@@ -75,6 +85,7 @@ abstract contract ICROWDToken is ERC20, Pausable, Ownable, HasMinters {
     }
 
     function mint(address to, uint256 amount) public virtual onlyMinter {
+        require(totalSupply() + amount <= _maxSupply, "over maxSupply");
         _mint(to, amount);
     }
 

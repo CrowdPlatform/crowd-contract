@@ -1,17 +1,10 @@
-import { ethers, waffle } from "hardhat";
-import { expect, assert } from "chai";
+import { ethers } from "hardhat";
 
-import { CrowdBridge } from "../typechain/CrowdBridge";
 import { CROWDToken } from "../typechain/CROWDToken";
-import { BigNumber } from "@ethersproject/bignumber";
+import { CROWDTokenBSC } from "../typechain/CROWDTokenBSC";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-const { deployContract } = waffle;
-
-const decimal = BigNumber.from((10 ** 18).toString());
-// const busdTokenAddress = '0x86dDC7e76bD30fEA987380f8C5C2bE4a5B43A42C';
-let crowdBridge: CrowdBridge;
-let crowdToken: CROWDToken;
+let crowdToken: CROWDToken | CROWDTokenBSC;
 var accounts: SignerWithAddress[];
 
 async function main() {
@@ -21,20 +14,50 @@ async function main() {
     var name = "CROWD";
     var symbol = "CWD";
     var amount = "0";
+    var maxSupply = null;
+
+    var factory: any;
+    var tokenAddress: string;
 
     switch (network.chainId) {
         case 1: //ethereum
-            amount = "2500000000";
-            break;
-        case 56: //bsc
-            amount = "0";
+            tokenAddress = process.env.CROWDTOKEN_ADDRESS_ETH || "";
+
+            if (tokenAddress !== "") crowdToken = await ethers.getContractAt("CROWDToken", tokenAddress);
+            else {
+                factory = await ethers.getContractFactory("CROWDToken");
+                amount = "2500000000";
+            }
             break;
         case 3: //ropsten
-            amount = "2500000000";
-            name = name + ".ropsten";
+            tokenAddress = process.env.CROWDTOKEN_ADDRESS_ROPSTEN || "";
+
+            if (tokenAddress !== "") crowdToken = await ethers.getContractAt("CROWDToken", tokenAddress);
+            else {
+                factory = await ethers.getContractFactory("CROWDToken");
+                amount = "2500000000";
+                name = name + ".ropsten";
+            }
+            break;
+
+        case 56: //bsc
+            tokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
+            if (tokenAddress !== "") crowdToken = await ethers.getContractAt("CROWDTokenBSC", tokenAddress);
+            else {
+                factory = await ethers.getContractFactory("CROWDTokenBSC");
+                amount = "0";
+                maxSupply = "2500000000";
+            }
             break;
         case 97: //bsc testnet
-            name = name + ".bnbt";
+            tokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT || "";
+            console.log(tokenAddress);
+            if (tokenAddress !== "") crowdToken = await ethers.getContractAt("CROWDTokenBSC", tokenAddress);
+            else {
+                factory = await ethers.getContractFactory("CROWDTokenBSC");
+                maxSupply = "2500000000";
+                name = name + ".bnbt";
+            }
             break;
         default:
             console.log(network);
@@ -42,15 +65,10 @@ async function main() {
     }
 
     if (!crowdToken) {
-        const factory = await ethers.getContractFactory("CROWDToken");
-        crowdToken = await factory.deploy(name, symbol, amount);
+        if (maxSupply === null) crowdToken = await factory.deploy(name, symbol, amount);
+        else crowdToken = await factory.deploy(name, symbol, amount, maxSupply);
     }
     console.log(crowdToken.address);
-
-    // console.log(validator);
-
-    // await crowdToken.connect(accounts[0]).transfer(testAccount.address, '1000000000000000000000000');
-    // await crowdToken.connect(testAccount).approve(crowdBridge.address, '115792089237316195423570985008687907853269984665640564039457584007913129639935');
 }
 
 main();
