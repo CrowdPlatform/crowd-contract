@@ -108,7 +108,11 @@ abstract contract ICROWDToken is ERC20, Pausable, Ownable, HasMinters {
         require(!paused(), "ERC20Pausable: token transfer while paused");
     }
 
-    function setPause() public {
+    function stop() public onlyOwner {
         _pause();
+    }
+
+    function start() public onlyOwner {
+        _unpause();
     }
 }
