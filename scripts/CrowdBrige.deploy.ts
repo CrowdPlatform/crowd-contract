@@ -75,7 +75,8 @@ async function main() {
         await (await crowdToken.addMinters([crowdBridge.address])).wait(1);
     }
 
-    await (await crowdBridge.registContrac(crowdToken.address)).wait(1);
+    let registed = await crowdBridge.registContract(crowdToken.address);
+    if (registed === false) await (await crowdBridge.registContrac(crowdToken.address)).wait(1);
 
     var validator = await crowdBridge.getValidator(crowdToken.address);
     if (validator !== validatorAddress) {

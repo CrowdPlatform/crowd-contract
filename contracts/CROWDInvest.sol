@@ -108,20 +108,23 @@ contract CROWDInvest is
     }
 
     function investPool(uint256 invest_id, uint256 amount) public payable {
-        require(_investPool[invest_id].total_amount != 0, "investPool: not exists id.");
+        require(_investPool[invest_id].total_amount != 0, "not exists id.");
 
         IDOPool storage pool = _investPool[invest_id];
-        require(pool.state == 0, "investPool: invalid state.");
-        require(pool.invested_amount + amount <= pool.total_amount, "investPool: invest amount is over.");
-        require(pool.ts_start_time <= block.timestamp, "investPool: This investment pool has not yet begun.");
-        require(pool.ts_finish_time >= block.timestamp, "investPool: This investment pool has already been terminated.");
+        require(pool.state == 0, "invalid state.");
+        require(pool.invested_amount + amount <= pool.total_amount, "invest amount is over.");
+        require(pool.ts_start_time <= block.timestamp, "This investment pool has not yet begun.");
+        require(pool.ts_finish_time >= block.timestamp, "This investment pool has already been terminated.");
 
-        require(pool.main_per_ticket != 0, "investPool: main_per_ticket is invalid");
+        require(pool.main_per_ticket != 0, "main_per_ticket is invalid");
         uint256 use_ticket = amount / 1e18 / uint256(pool.main_per_ticket);
         if (amount % (uint256(pool.main_per_ticket) * 1e18) != 0) use_ticket++;
 
         int256 idx = getUserIndex(invest_id, msg.sender);
-        require(idx != -1 && _whiteListTickets[invest_id][uint256(idx)] >= use_ticket, "investPool: insufficient ticket");
+        require(idx != -1 && _whiteListTickets[invest_id][uint256(idx)] >= use_ticket, "insufficient ticket");
+
+        pool.invested_amount += amount;
+        _whiteListTickets[invest_id][uint256(idx)] -= use_ticket;
 
         if (pool.main_token == address(0)) {
             require(amount == msg.value, "investPool: invalid amount");
@@ -130,8 +133,6 @@ contract CROWDInvest is
             IERC20 erc20 = IERC20(pool.main_token);
             erc20.transferFrom(msg.sender, token_reciever, amount);
         }
-        pool.invested_amount += amount;
-        _whiteListTickets[invest_id][uint256(idx)] -= use_ticket;
 
         emit InvestPool(invest_id, msg.sender, amount, use_ticket);
     }

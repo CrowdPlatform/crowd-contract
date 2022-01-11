@@ -3,6 +3,7 @@ build
 .env
 yarn-error.log
 deploys
+.DS_Store
 
 coverage
 coverage.json
