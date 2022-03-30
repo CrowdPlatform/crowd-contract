@@ -39,7 +39,12 @@ async function main() {
         case 97: //bsc testnet
             tokenAddress = process.env.TICKET_ADDRESS_BNBT || "";
             break;
+        case 1001: //baobab
+            tokenAddress = process.env.TICKET_ADDRESS_BAOBAB || "";
+            idoWallet = await ethers.getContractAt("IDOWallet", process.env.BAOBAB_WALLET || "");
+            break;
         default:
+            console.log(network.chainId);
             console.log(network);
             return;
     }
@@ -62,14 +67,15 @@ async function main() {
             await idoWallet.setValidator(tokenAddress, validatorAddress);
         }
 
-        var receiver = await idoWallet.getReciver();
-        if (receiver !== recieverAddress) {
-            await (await idoWallet.setReciever(recieverAddress)).wait(1);
-            var receiver = await idoWallet.getReciver();
-            // console.log(receiver);
-        }
-
         // await tokenContract.connect(accounts[0]).approve(idoWallet.address, "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    }
+
+    var receiver = await idoWallet.getReciver();
+    console.log(receiver);
+    if (receiver !== recieverAddress) {
+        await idoWallet.setReciever(recieverAddress);
+        var receiver = await idoWallet.getReciver();
+        console.log(receiver);
     }
 }
 
