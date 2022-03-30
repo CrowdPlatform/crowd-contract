@@ -39,6 +39,10 @@ const config: HardhatUserConfig = {
             url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
             accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
         },
+        baobab: {
+            url: process.env.BAOBAB_URL || "",
+            accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
+        },
 
         bsc: {
             url: `https://bsc-dataseed.binance.org/`,
@@ -46,6 +50,10 @@ const config: HardhatUserConfig = {
         },
         eth: {
             url: process.env.ETH_URL || "",
+            accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
+        },
+        cypress: {
+            url: process.env.CYPRESS_URL || "",
             accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
         },
     },
