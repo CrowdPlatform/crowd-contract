@@ -24,6 +24,9 @@ async function main() {
     else if (network.name === 'ropsten') {
         alpToken = await ethers.getContractAt("CROWDToken", '0x2Ba155D1D567D98458b335A51D25a24a3b0f23ec');
     }
+    else if (network.name === 'maticmum') {
+        // alpToken = await ethers.getContractAt("CROWDToken", '0x2Ba155D1D567D98458b335A51D25a24a3b0f23ec');
+    }
     else {
         console.log(network);
         return;
