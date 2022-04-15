@@ -43,6 +43,10 @@ const config: HardhatUserConfig = {
             url: process.env.BAOBAB_URL || "",
             accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
         },
+        mumbai: {
+            url: `https://rpc-mumbai.matic.today`,
+            accounts: JSON.parse(process.env.privatekeys === undefined ? "[]" : process.env.privatekeys),
+        },
 
         bsc: {
             url: `https://bsc-dataseed.binance.org/`,

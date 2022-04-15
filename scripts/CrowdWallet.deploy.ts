@@ -1,7 +1,7 @@
 import { ethers, waffle } from "hardhat";
 
 import { IDOWallet } from "../typechain/IDOWallet";
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+// import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 let idoWallet: IDOWallet;
@@ -42,6 +42,10 @@ async function main() {
         case 1001: //baobab
             tokenAddress = process.env.TICKET_ADDRESS_BAOBAB || "";
             idoWallet = await ethers.getContractAt("IDOWallet", process.env.BAOBAB_WALLET || "");
+            break;
+        case 80001: //mumbai
+            tokenAddress = process.env.TICKET_ADDRESS_MUMBAI || "";
+            idoWallet = await ethers.getContractAt("IDOWallet", process.env.MUMBAI_WALLET || "");
             break;
         default:
             console.log(network.chainId);

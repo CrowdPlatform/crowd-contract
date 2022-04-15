@@ -10,6 +10,10 @@ truffle에서 hardhat으로 변경.
 
 > yarn hardhat verify 0xD2644a9D3E662b8907f00d88945a8a3a22B718de --network bscTestnet --contract contracts/CROWDTokenBSC.sol:CROWDTokenBSC CROWD.bnbt CWD 0 2500000000
 
+
+
+yarn hardhat run scripts/CrowdWallet.deploy.ts --network mumbai
+
 ### Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
