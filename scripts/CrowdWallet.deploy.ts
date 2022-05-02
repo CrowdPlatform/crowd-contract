@@ -47,6 +47,10 @@ async function main() {
             tokenAddress = process.env.TICKET_ADDRESS_MUMBAI || "";
             idoWallet = await ethers.getContractAt("IDOWallet", process.env.MUMBAI_WALLET || "");
             break;
+        case 137: //polygon
+            tokenAddress = process.env.TICKET_ADDRESS_POLYGON || "";
+            // idoWallet = await ethers.getContractAt("IDOWallet", process.env.POLYGON_WALLET || "");
+            break;
         default:
             console.log(network.chainId);
             console.log(network);
@@ -75,12 +79,14 @@ async function main() {
     }
 
     var receiver = await idoWallet.getReciver();
-    console.log(receiver);
     if (receiver !== recieverAddress) {
         await idoWallet.setReciever(recieverAddress);
-        var receiver = await idoWallet.getReciver();
+        receiver = await idoWallet.getReciver();
         console.log(receiver);
     }
 }
 
-main();
+main().catch((error)=>{
+    console.error(error);
+    process.exitCode = 1;
+});

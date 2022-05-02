@@ -29,16 +29,16 @@ async function main() {
 
     switch (network.chainId) {
         case 1: //ethereum
-            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ETH || "";
-            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_ETH || "";
+            crowdTokenAddress = "0x374fB05c96c36348b92E38fB088b26B8511e3b3D";
+            crowdBridgeAddress = "0xFEDA85027F27521F4decAAf66f1bd1FCd9F587EE";
             break;
         case 3: //ropsten
             crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_ROPSTEN || "";
             crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_ROPSTEN || "";
             break;
         case 56: //bsc
-            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
-            crowdBridgeAddress = process.env.CROWDBRIDGE_ADDRESS_BNB || "";
+            crowdTokenAddress = "0xA81178849351b3d8c2BD223c2A03A5257B539769";
+            crowdBridgeAddress = "0x1954c4227332C28242cA927AF9656c8aA0381822";
             contractName = "CROWDTokenBSC";
             break;
         case 97: //bsc testnet
@@ -72,7 +72,7 @@ async function main() {
     var isMinter = await crowdToken.isMinter(crowdBridge.address);
     if (isMinter === false) {
         console.log("minter is not added");
-        await (await crowdToken.addMinters([crowdBridge.address])).wait(1);
+        await (await crowdToken.addMinters([crowdBridge.address], {gasLimit:100000})).wait(1);
     }
 
     let registed = await crowdBridge.registContract(crowdToken.address);

@@ -25,8 +25,8 @@ async function main() {
         case 3: //ropsten
             break;
         case 56: //bsc
-            crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNB || "";
-            crowdStakeAddress = process.env.CROWDSTAKE_ADDRESS_BNB || "";
+            crowdTokenAddress = "0xA81178849351b3d8c2BD223c2A03A5257B539769";
+            crowdStakeAddress = "0x08C2C62435c90FcE465cAaE0B5580D4be8bcd6dA";
             break;
         case 97: //bsc testnet
             crowdTokenAddress = process.env.CROWDTOKEN_ADDRESS_BNBT || "";

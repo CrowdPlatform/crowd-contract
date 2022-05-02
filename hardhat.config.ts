@@ -60,14 +60,19 @@ const config: HardhatUserConfig = {
             url: process.env.CYPRESS_URL || "",
             accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
         },
+        polygon: {
+            url: process.env.POLYGON_URL || "",
+            accounts: JSON.parse(process.env.privatekeys_main === undefined ? "[]" : process.env.privatekeys_main),
+        },
     },
     gasReporter: {
         enabled: true,
         currency: "USD",
     },
     etherscan: {
-        // apiKey: process.env.ETHERSCAN_API_KEY,
-        apiKey: process.env.BSCSCANAPIKEY,
+        apiKey: process.env.ETHERSCAN_API_KEY,
+        // apiKey: process.env.BSCSCANAPIKEY,
+        // apiKey: process.env.POLYGONSCAN_API_KEY,
     },
 };
 
